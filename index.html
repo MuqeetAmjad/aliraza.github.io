@@ -1,1 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AUDIT NEXUS | CAF 8 Audit & Assurance | Artt Business School</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030d1a;--bg2:#071425;--card:rgba(10,28,55,0.92);--cyan:#00e5ff;--cyan2:#00bcd4;--gold:#ffd700;--green:#00e676;--red:#ff3d5a;--orange:#ff6b35;--purple:#7c4dff;--text:#e0f0ff;--muted:#4a7a9b;--border:rgba(0,229,255,0.18);}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--bg2);}::-webkit-scrollbar-thumb{background:var(--cyan2);border-radius:3px;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+.screen{display:none;position:relative;z-index:1;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
+.watermark{position:fixed;bottom:10px;right:16px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;z-index:999;opacity:.6;}
+#landing{background:radial-gradient(ellipse at 30% 20%,rgba(255,61,90,0.06) 0%,transparent 60%),radial-gradient(ellipse at 70% 80%,rgba(0,229,255,0.06) 0%,transparent 60%);}
+.landing-badge{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--cyan2);text-transform:uppercase;margin-bottom:12px;animation:pulse 2s infinite;}
+.landing-title{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,6vw,4.2rem);font-weight:900;letter-spacing:4px;line-height:1.1;text-align:center;color:#fff;text-shadow:0 0 40px rgba(0,229,255,0.4);}
+.landing-title span{color:var(--red);display:block;}
+.landing-sub{font-size:1rem;color:var(--muted);letter-spacing:2px;margin:10px 0 6px;text-align:center;}
+.landing-chapter{font-family:'Orbitron',sans-serif;font-size:.75rem;color:var(--gold);letter-spacing:3px;margin-bottom:32px;text-align:center;}
+.landing-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+.btn{font-family:'Orbitron',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:2px;padding:14px 28px;border:none;cursor:pointer;text-transform:uppercase;transition:all .2s;border-radius:4px;}
+.btn-primary{background:var(--cyan);color:#000;box-shadow:0 0 25px rgba(0,229,255,.35);}
+.btn-primary:hover{background:#fff;transform:translateY(-2px);box-shadow:0 0 40px rgba(0,229,255,.6);}
+.btn-secondary{background:transparent;color:var(--cyan);border:1.5px solid var(--cyan);box-shadow:0 0 12px rgba(0,229,255,.15);}
+.btn-secondary:hover{background:rgba(0,229,255,.08);transform:translateY(-2px);}
+.btn-gold{background:var(--gold);color:#000;}
+.btn-gold:hover{background:#ffe55c;transform:translateY(-2px);}
+.stats-row{display:flex;gap:20px;margin-top:30px;flex-wrap:wrap;justify-content:center;}
+.stat-chip{background:rgba(0,229,255,.05);border:1px solid var(--border);border-radius:6px;padding:10px 18px;text-align:center;}
+.stat-chip .val{font-family:'Orbitron',sans-serif;font-size:1.3rem;color:var(--cyan);font-weight:700;}
+.stat-chip .lbl{font-size:.72rem;color:var(--muted);letter-spacing:1px;}
+#hud{position:fixed;top:0;left:0;right:0;background:rgba(3,13,26,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:none;align-items:center;justify-content:space-between;padding:10px 20px;z-index:100;flex-wrap:wrap;gap:8px;}
+#hud.visible{display:flex;}
+.hud-level{font-family:'Orbitron',sans-serif;font-size:.7rem;color:var(--cyan);letter-spacing:2px;}
+.hud-score{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--gold);font-weight:700;}
+.hud-lives{font-size:1.1rem;letter-spacing:2px;}
+.hud-streak{font-family:'Share Tech Mono',monospace;font-size:.75rem;color:var(--orange);display:flex;align-items:center;gap:4px;}
+.progress-bar-wrap{position:fixed;top:52px;left:0;right:0;height:3px;background:rgba(255,255,255,.05);z-index:100;display:none;}
+.progress-bar-wrap.visible{display:block;}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--orange));transition:width .4s ease;width:0%;}
+#story{text-align:center;max-width:650px;margin:0 auto;}
+.story-icon{font-size:4rem;margin-bottom:16px;animation:float 3s ease-in-out infinite;}
+.story-title{font-family:'Orbitron',sans-serif;font-size:1.4rem;color:var(--cyan);margin-bottom:20px;letter-spacing:2px;}
+.story-text{font-size:1.05rem;line-height:1.8;color:#aac5d8;margin-bottom:12px;}
+.story-mission{background:rgba(255,61,90,.05);border:1px solid rgba(255,61,90,.2);border-left:3px solid var(--red);border-radius:4px;padding:14px 18px;margin:20px 0;text-align:left;}
+.story-mission h4{font-family:'Orbitron',sans-serif;font-size:.7rem;color:var(--red);letter-spacing:2px;margin-bottom:8px;}
+.story-mission p{font-size:.92rem;color:var(--text);}
+#cheatsheet{max-width:700px;width:100%;margin:0 auto;padding-top:70px;}
+.cs-header{text-align:center;margin-bottom:24px;}
+.cs-badge{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--cyan2);text-transform:uppercase;}
+.cs-title{font-family:'Orbitron',sans-serif;font-size:1.5rem;color:var(--gold);margin:6px 0;}
+.cs-body{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:20px;}
+.cs-section{margin-bottom:16px;}
+.cs-section:last-child{margin-bottom:0;}
+.cs-section h4{font-family:'Orbitron',sans-serif;font-size:.65rem;color:var(--cyan);letter-spacing:2px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.cs-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px;font-size:.9rem;line-height:1.5;}
+.cs-item .tag{font-family:'Share Tech Mono',monospace;font-size:.7rem;background:rgba(0,229,255,.1);color:var(--cyan);padding:2px 7px;border-radius:3px;white-space:nowrap;flex-shrink:0;margin-top:1px;}
+.cs-item .tag.gold{background:rgba(255,215,0,.12);color:var(--gold);}
+.cs-item .tag.green{background:rgba(0,230,118,.1);color:var(--green);}
+.cs-item .tag.red{background:rgba(255,61,90,.1);color:var(--red);}
+.cs-item .tag.purple{background:rgba(124,77,255,.12);color:var(--purple);}
+.memory-trick{background:rgba(255,215,0,.05);border:1px solid rgba(255,215,0,.2);border-radius:6px;padding:10px 14px;margin-top:10px;font-size:.85rem;color:var(--gold);}
+.memory-trick::before{content:"💡 MEMORY TRICK: ";font-weight:700;}
+.exam-fave{background:rgba(255,61,90,.06);border:1px solid rgba(255,61,90,.25);border-radius:6px;padding:8px 12px;margin-top:8px;font-size:.82rem;color:var(--red);}
+.exam-fave::before{content:"⭐ EXAMINER FAVOURITE: ";font-weight:700;}
+#playing{padding-top:80px;max-width:700px;width:100%;margin:0 auto;}
+.q-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
+.q-type-badge{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;padding:4px 10px;border-radius:3px;text-transform:uppercase;}
+.qt-mcq{background:rgba(0,229,255,.1);color:var(--cyan);border:1px solid rgba(0,229,255,.3);}
+.qt-tf{background:rgba(124,77,255,.1);color:var(--purple);border:1px solid rgba(124,77,255,.3);}
+.qt-scenario{background:rgba(0,230,118,.08);color:var(--green);border:1px solid rgba(0,230,118,.25);}
+.qt-rapidfire{background:rgba(255,61,90,.1);color:var(--red);border:1px solid rgba(255,61,90,.3);}
+.qt-trap{background:rgba(255,107,53,.1);color:var(--orange);border:1px solid rgba(255,107,53,.3);}
+.q-num{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);}
+.timer-ring{width:44px;height:44px;position:relative;}
+.timer-ring svg{transform:rotate(-90deg);}
+.timer-ring circle{fill:none;stroke-width:3;}
+.timer-ring .bg{stroke:rgba(255,255,255,.08);}
+.timer-ring .fg{stroke:var(--red);stroke-linecap:round;transition:stroke-dashoffset .9s linear;}
+.timer-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:.7rem;font-weight:700;color:var(--red);}
+.scenario-box{background:rgba(0,230,118,.05);border:1px solid rgba(0,230,118,.2);border-left:3px solid var(--green);border-radius:4px;padding:12px 16px;margin-bottom:16px;font-size:.88rem;color:#aad4c0;line-height:1.6;white-space:pre-line;}
+.scenario-box::before{content:"📋 SCENARIO  ";font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--green);display:block;margin-bottom:6px;}
+.q-text{font-size:1.08rem;line-height:1.65;margin-bottom:22px;color:#cce0f5;font-weight:500;}
+.trap-warning{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;color:var(--orange);margin-bottom:10px;font-family:'Share Tech Mono',monospace;}
+.options{display:flex;flex-direction:column;gap:10px;}
+.option{background:rgba(10,28,55,.7);border:1.5px solid rgba(0,229,255,.15);border-radius:6px;padding:14px 18px;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:12px;font-size:.95rem;text-align:left;}
+.option:hover{border-color:var(--cyan);background:rgba(0,229,255,.06);transform:translateX(4px);}
+.option .opt-letter{font-family:'Orbitron',sans-serif;font-size:.65rem;font-weight:700;width:24px;height:24px;border-radius:4px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);display:flex;align-items:center;justify-content:center;color:var(--cyan);flex-shrink:0;}
+.option.correct{border-color:var(--green);background:rgba(0,230,118,.1);cursor:default;}
+.option.correct .opt-letter{background:var(--green);border-color:var(--green);color:#000;}
+.option.wrong{border-color:var(--red);background:rgba(255,61,90,.08);cursor:default;}
+.option.wrong .opt-letter{background:var(--red);border-color:var(--red);color:#fff;}
+.option.disabled{pointer-events:none;opacity:.45;}
+.tf-options{display:flex;gap:14px;justify-content:center;margin-top:10px;}
+.tf-btn{font-family:'Orbitron',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:2px;padding:18px 40px;border-radius:6px;cursor:pointer;transition:all .18s;border:2px solid;flex:1;max-width:180px;text-align:center;}
+.tf-true{border-color:var(--green);color:var(--green);background:rgba(0,230,118,.05);}
+.tf-true:hover{background:rgba(0,230,118,.12);transform:translateY(-2px);}
+.tf-false{border-color:var(--red);color:var(--red);background:rgba(255,61,90,.05);}
+.tf-false:hover{background:rgba(255,61,90,.1);transform:translateY(-2px);}
+.tf-btn.correct{background:var(--green)!important;color:#000;border-color:var(--green);}
+.tf-btn.wrong{background:var(--red)!important;color:#fff;border-color:var(--red);}
+.tf-btn:disabled{pointer-events:none;}
+#feedback{max-width:700px;width:100%;margin:0 auto;padding-top:80px;}
+.feedback-card{background:var(--card);border-radius:8px;padding:28px;border:1.5px solid;}
+.feedback-card.correct-card{border-color:var(--green);box-shadow:0 0 30px rgba(0,230,118,.12);}
+.feedback-card.wrong-card{border-color:var(--red);box-shadow:0 0 30px rgba(255,61,90,.12);}
+.fb-result{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+.fb-icon{font-size:2.5rem;}
+.fb-title{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;}
+.fb-title.c{color:var(--green);}
+.fb-title.w{color:var(--red);}
+.fb-points{font-family:'Share Tech Mono',monospace;font-size:.8rem;color:var(--gold);}
+.fb-correct-ans{background:rgba(0,230,118,.07);border:1px solid rgba(0,230,118,.25);border-radius:4px;padding:10px 14px;margin-bottom:14px;font-size:.9rem;}
+.fb-correct-ans span{color:var(--green);font-weight:600;}
+.fb-explanation{font-size:.92rem;line-height:1.7;color:#aac5d8;margin-bottom:16px;}
+.fb-why-wrong{background:rgba(255,61,90,.05);border:1px solid rgba(255,61,90,.18);border-radius:4px;padding:10px 14px;font-size:.85rem;color:#e8a0a0;margin-bottom:14px;}
+.fb-why-wrong::before{content:"❌ Common Trap: ";color:var(--red);font-weight:600;}
+.fb-memory{background:rgba(255,215,0,.05);border:1px solid rgba(255,215,0,.2);border-radius:4px;padding:10px 14px;font-size:.85rem;color:var(--gold);}
+.fb-memory::before{content:"💡 Remember: ";}
+.streak-bonus{display:inline-flex;align-items:center;gap:6px;background:rgba(255,107,53,.1);border:1px solid rgba(255,107,53,.3);border-radius:4px;padding:6px 12px;font-family:'Orbitron',sans-serif;font-size:.72rem;color:var(--orange);margin-bottom:12px;}
+#level_complete{text-align:center;max-width:600px;width:100%;padding-top:70px;}
+.lc-icon{font-size:5rem;margin-bottom:10px;animation:float 2s ease-in-out infinite;}
+.lc-title{font-family:'Orbitron',sans-serif;font-size:1.6rem;color:var(--gold);letter-spacing:3px;margin-bottom:6px;}
+.lc-subtitle{color:var(--muted);font-size:.9rem;margin-bottom:28px;}
+.lc-stats{display:flex;gap:16px;justify-content:center;margin-bottom:28px;flex-wrap:wrap;}
+.lc-stat{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px 24px;min-width:100px;}
+.lc-stat .v{font-family:'Orbitron',sans-serif;font-size:1.5rem;color:var(--cyan);font-weight:700;}
+.lc-stat .l{font-size:.72rem;color:var(--muted);letter-spacing:1px;margin-top:3px;}
+.rank-display{background:rgba(255,215,0,.06);border:2px solid var(--gold);border-radius:8px;padding:16px 24px;margin-bottom:24px;}
+.rank-label{font-family:'Orbitron',sans-serif;font-size:.65rem;color:var(--gold);letter-spacing:2px;}
+.rank-name{font-family:'Orbitron',sans-serif;font-size:1.3rem;color:var(--gold);font-weight:700;}
+#final_results{max-width:760px;width:100%;padding-top:80px;padding-bottom:40px;}
+.results-header{text-align:center;margin-bottom:30px;}
+.results-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.3rem,4vw,2rem);color:var(--gold);letter-spacing:3px;margin-bottom:6px;}
+.results-rank{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--cyan);}
+.revision-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:8px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;}
+.revision-table th{background:rgba(255,61,90,.08);font-family:'Orbitron',sans-serif;font-size:.6rem;letter-spacing:2px;color:var(--red);padding:12px 16px;text-align:left;border-bottom:1px solid var(--border);}
+.revision-table td{padding:10px 16px;font-size:.88rem;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top;line-height:1.5;}
+.revision-table tr:last-child td{border-bottom:none;}
+.revision-table tr:hover td{background:rgba(255,61,90,.03);}
+.tag-cell{font-family:'Share Tech Mono',monospace;font-size:.75rem;color:var(--red);}
+.shortcut-cell{color:var(--gold);font-size:.82rem;}
+.section-title-row td{background:rgba(255,61,90,.04);font-family:'Orbitron',sans-serif;font-size:.6rem;letter-spacing:2px;color:var(--orange);padding:8px 16px;}
+.results-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px;}
+#revision{max-width:720px;width:100%;padding:80px 20px 40px;}
+.rev-title{font-family:'Orbitron',sans-serif;font-size:1.4rem;color:var(--cyan);letter-spacing:3px;text-align:center;margin-bottom:24px;}
+.rev-section{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:16px;}
+.rev-section h3{font-family:'Orbitron',sans-serif;font-size:.65rem;color:var(--gold);letter-spacing:2px;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.rev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;}
+.rev-card{background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.12);border-radius:6px;padding:10px 12px;}
+.rev-card .rc-title{font-size:.78rem;font-weight:700;color:var(--cyan);margin-bottom:4px;}
+.rev-card .rc-body{font-size:.82rem;color:#9ab;line-height:1.5;}
+.risk-table-mini{width:100%;border-collapse:collapse;font-size:.82rem;}
+.risk-table-mini th{color:var(--red);font-family:'Share Tech Mono',monospace;font-size:.7rem;padding:6px 10px;border-bottom:1px solid rgba(255,61,90,.2);text-align:left;}
+.risk-table-mini td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.04);line-height:1.4;}
+.risk-table-mini tr:last-child td{border-bottom:none;}
+.risk-table-mini .rf{color:var(--orange);font-family:'Share Tech Mono',monospace;font-size:.72rem;}
+.risk-table-mini .ri{color:#9ab;}
+#gameover{text-align:center;max-width:500px;}
+.go-icon{font-size:5rem;margin-bottom:16px;}
+.go-title{font-family:'Orbitron',sans-serif;font-size:2rem;color:var(--red);letter-spacing:3px;margin-bottom:8px;}
+.go-sub{color:var(--muted);margin-bottom:24px;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes popIn{from{transform:scale(.8);opacity:0;}to{transform:scale(1);opacity:1;}}
+.fade-in{animation:fadeIn .35s ease both;}
+.pop-in{animation:popIn .3s cubic-bezier(0.34,1.56,0.64,1) both;}
+@media(max-width:600px){.lc-stats{gap:10px;}.tf-options{flex-direction:column;align-items:center;}}
+</style>
+</head>
+<body>
+<div class="watermark">Prepared by Artt Business School</div>
+<div id="hud">
+  <div><div class="hud-level" id="hudLevel">LEVEL 1 — WHAT IS AUDIT?</div><div class="hud-streak" id="hudStreak">🔥 STREAK: 0</div></div>
+  <div class="hud-score" id="hudScore">⚡ 0 PTS</div>
+  <div class="hud-lives" id="hudLives">❤️ ❤️ ❤️</div>
+</div>
+<div class="progress-bar-wrap" id="progressWrap"><div class="progress-bar-fill" id="progressFill"></div></div>
 
+<div class="screen active" id="landing">
+  <div style="text-align:center;max-width:660px;">
+    <div class="landing-badge">⬡ Artt Business School · CAF 8 Audit & Assurance</div>
+    <h1 class="landing-title">AUDIT<span>NEXUS</span></h1>
+    <div class="landing-sub">INTERACTIVE LEARNING GAME</div>
+    <div class="landing-chapter">RISK IDENTIFICATION · ISA 315 · CASE STUDIES · PAST PAPERS</div>
+    <div class="landing-btns">
+      <button class="btn btn-primary" onclick="showStory()">▶ BEGIN MISSION</button>
+      <button class="btn btn-secondary" onclick="showRevision()">⚡ SPEED REVISION</button>
+    </div>
+    <div class="stats-row">
+      <div class="stat-chip"><div class="val">7</div><div class="lbl">LEVELS</div></div>
+      <div class="stat-chip"><div class="val">55+</div><div class="lbl">QUESTIONS</div></div>
+      <div class="stat-chip"><div class="val">13</div><div class="lbl">RISK TYPES</div></div>
+      <div class="stat-chip"><div class="val">100%</div><div class="lbl">SYLLABUS</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="story">
+  <div class="story-icon">🕵️</div>
+  <div class="story-title">YOUR MISSION, AUDIT TRAINEE</div>
+  <div class="story-text">Welcome to <strong style="color:var(--cyan)">AMK Chartered Accountants</strong> — a Big 4 equivalent firm. You've just joined as an <strong>Audit Trainee</strong>. Your first assignment: audit Pakistan's biggest companies across 7 industries.</div>
+  <div class="story-text">Your senior has warned you: <strong style="color:var(--red)">every business hides risks</strong>. Your job is to identify them, draft them correctly, and protect the financial statement users.</div>
+  <div class="story-mission">
+    <h4>⬡ MISSION BRIEFING</h4>
+    <p>Navigate 7 levels from audit basics to ICAP past papers. Master the drafting technique, identify risk factors from scenarios, and earn the rank of <strong style="color:var(--gold)">Audit Partner 🏆</strong>. Lose all 3 lives and the engagement fails.</p>
+  </div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+    <button class="btn btn-primary" onclick="startGame()">▶ START LEVEL 1</button>
+    <button class="btn btn-secondary" onclick="showScreen('landing')">← BACK</button>
+  </div>
+</div>
+
+<div class="screen" id="cheatsheet">
+  <div class="cs-header">
+    <div class="cs-badge" id="csBadge">LEVEL 1 BRIEFING</div>
+    <div class="cs-title" id="csTitle">WHAT IS AUDIT?</div>
+    <div style="font-size:.85rem;color:var(--muted);">Study this quick reference before you begin</div>
+  </div>
+  <div class="cs-body" id="csBody"></div>
+  <button class="btn btn-primary" id="csStartBtn" onclick="startLevelPlay()">▶ BEGIN LEVEL</button>
+</div>
+
+<div class="screen" id="playing">
+  <div class="q-meta">
+    <div><span class="q-type-badge qt-mcq" id="qTypeBadge">MCQ</span></div>
+    <div class="q-num" id="qNum">Q1 of 6</div>
+    <div class="timer-ring" id="timerRing" style="display:none;">
+      <svg width="44" height="44" viewBox="0 0 44 44">
+        <circle class="bg" cx="22" cy="22" r="18"/>
+        <circle class="fg" id="timerCircle" cx="22" cy="22" r="18" stroke-dasharray="113" stroke-dashoffset="0"/>
+      </svg>
+      <div class="timer-val" id="timerVal">10</div>
+    </div>
+  </div>
+  <div class="scenario-box" id="scenarioBox" style="display:none;"></div>
+  <div class="trap-warning" id="trapWarning" style="display:none;">⚠️ EXAM TRAP ALERT — Think carefully!</div>
+  <div class="q-text" id="qText"></div>
+  <div id="qAnswerArea"></div>
+</div>
+
+<div class="screen" id="feedback">
+  <div class="feedback-card fade-in" id="feedbackCard">
+    <div class="fb-result">
+      <div class="fb-icon" id="fbIcon"></div>
+      <div><div class="fb-title" id="fbTitle"></div><div class="fb-points" id="fbPoints"></div></div>
+    </div>
+    <div class="streak-bonus" id="streakBonus" style="display:none;">🔥 STREAK BONUS! +5 PTS</div>
+    <div class="fb-correct-ans" id="fbCorrectAns"></div>
+    <div class="fb-explanation" id="fbExplanation"></div>
+    <div class="fb-why-wrong" id="fbWrongNote" style="display:none;"></div>
+    <div class="fb-memory" id="fbMemory" style="display:none;"></div>
+    <button class="btn btn-primary" onclick="nextQuestion()" style="width:100%;margin-top:8px;">CONTINUE →</button>
+  </div>
+</div>
+
+<div class="screen" id="level_complete">
+  <div class="lc-icon" id="lcIcon">🏅</div>
+  <div class="lc-title" id="lcTitle">LEVEL CLEARED!</div>
+  <div class="lc-subtitle" id="lcSub"></div>
+  <div class="lc-stats">
+    <div class="lc-stat"><div class="v" id="lcScore">0</div><div class="l">SCORE</div></div>
+    <div class="lc-stat"><div class="v" id="lcCorrect">0/0</div><div class="l">CORRECT</div></div>
+    <div class="lc-stat"><div class="v" id="lcLives">❤️❤️❤️</div><div class="l">LIVES LEFT</div></div>
+  </div>
+  <div class="rank-display"><div class="rank-label">CURRENT RANK</div><div class="rank-name" id="lcRank">Audit Trainee</div></div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+    <button class="btn btn-primary" id="lcNextBtn" onclick="nextLevel()">NEXT LEVEL →</button>
+  </div>
+</div>
+
+<div class="screen" id="gameover">
+  <div class="go-icon">💀</div>
+  <div class="go-title">ENGAGEMENT FAILED</div>
+  <div class="go-sub">You ran out of lives. Review the concepts and re-attempt the audit!</div>
+  <div style="font-family:'Orbitron',sans-serif;font-size:1.1rem;color:var(--gold);margin-bottom:24px;" id="goScore"></div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+    <button class="btn btn-primary" onclick="restartGame()">↩ TRY AGAIN</button>
+    <button class="btn btn-secondary" onclick="showRevision()">⚡ REVISION MODE</button>
+  </div>
+</div>
+
+<div class="screen" id="final_results">
+  <div class="results-header">
+    <div class="results-title">🏆 AUDIT COMPLETE!</div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:.8rem;color:var(--muted);margin:4px 0;">CAF 8 — RISK IDENTIFICATION · ISA 315 · CASE STUDIES</div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:2rem;color:var(--gold);margin:8px 0;" id="finalScore"></div>
+    <div class="results-rank" id="finalRank"></div>
+  </div>
+  <table class="revision-table">
+    <thead><tr><th>RISK FACTOR / SITUATION</th><th>AUDIT RISK (WHAT TO WRITE)</th><th>MEMORY SHORTCUT</th></tr></thead>
+    <tbody>
+      <tr class="section-title-row"><td colspan="3">13 MASTER RISK SCENARIOS — ICAP EXAM TABLE</td></tr>
+      <tr><td class="tag-cell">Courier + Fuel price hike</td><td>Risk of UNDERSTATEMENT of fuel expenses</td><td class="shortcut-cell">Fuel UP = Cost should be UP</td></tr>
+      <tr><td class="tag-cell">Bank loans + Flood/Disaster</td><td>Risk of OVERSTATEMENT of loans + UNDERSTATEMENT of bad debt expense</td><td class="shortcut-cell">Flood = Can't repay = Write off needed</td></tr>
+      <tr><td class="tag-cell">Exports/Imports (foreign currency)</td><td>Risk of incorrect EXCHANGE RATE for recording sales and forex gain/loss</td><td class="shortcut-cell">$→PKR = Rate matters</td></tr>
+      <tr><td class="tag-cell">Export sales BANNED + stock in inventory</td><td>Risk of OVERSTATEMENT of revenue + OVERSTATEMENT of PPE (impairment)</td><td class="shortcut-cell">Banned = Can't sell = Revenue + PPE overstated</td></tr>
+      <tr><td class="tag-cell">Selling at LOWER MARGIN / Competitor</td><td>Risk of OVERSTATEMENT of inventory + UNDERSTATEMENT of NRV losses</td><td class="shortcut-cell">Below cost = NRV writedown needed</td></tr>
+      <tr><td class="tag-cell">Competitor arrived + Revenue INCREASED</td><td>Risk of OVERSTATEMENT of revenue + OVERSTATEMENT of PPE</td><td class="shortcut-cell">Competitor + UP revenue = Suspicious</td></tr>
+      <tr><td class="tag-cell">Receivable/Debtor days INCREASED</td><td>Risk of OVERSTATEMENT of receivables + UNDERSTATEMENT of bad debt expense</td><td class="shortcut-cell">Days UP = Slow collection = Overstatement</td></tr>
+      <tr><td class="tag-cell">Inventory days INCREASED</td><td>Risk of OVERSTATEMENT of inventory + UNDERSTATEMENT of NRV losses</td><td class="shortcut-cell">Days UP = Slow movement = Overstatement</td></tr>
+      <tr><td class="tag-cell">Product banned/declining + stock in inventory</td><td>Risk of OVERSTATEMENT of inventory + UNDERSTATEMENT of NRV losses</td><td class="shortcut-cell">Can't sell = NRV issue</td></tr>
+      <tr><td class="tag-cell">Highly REGULATED industry</td><td>Risk of non-compliance + UNDERSTATEMENT of penalties + Undisclosed contingencies</td><td class="shortcut-cell">Regulation = Fines = Must disclose</td></tr>
+      <tr><td class="tag-cell">Sales DECLINING + Negative cash flows</td><td>Risk of PPE IMPAIRMENT (value in use may be lower than carrying amount)</td><td class="shortcut-cell">Declining revenue = PPE may be impaired</td></tr>
+      <tr><td class="tag-cell">Research & Development (IAS 38)</td><td>Research wrongly CAPITALIZED; or Development capitalized without meeting 4 conditions</td><td class="shortcut-cell">Research = always expense; Dev = 4 conditions</td></tr>
+      <tr><td class="tag-cell">GOING CONCERN signals</td><td>Major customer lost / Debt covenants breached / CL > CA / Negative CFO</td><td class="shortcut-cell">12 months ahead — can they survive?</td></tr>
+    </tbody>
+  </table>
+  <div class="results-btns">
+    <button class="btn btn-primary" onclick="restartGame()">↩ PLAY AGAIN</button>
+    <button class="btn btn-secondary" onclick="showRevision()">⚡ REVISION MODE</button>
+    <button class="btn btn-gold" onclick="showScreen('landing')">🏠 HOME</button>
+  </div>
+</div>
+
+<div class="screen" id="revision" style="justify-content:flex-start;">
+  <div style="width:100%;max-width:720px;margin:0 auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+      <div class="rev-title" style="margin:0;">⚡ SPEED REVISION</div>
+      <button class="btn btn-secondary" onclick="showScreen('landing')" style="padding:8px 16px;font-size:.65rem;">← HOME</button>
+    </div>
+
+<div class="rev-section">
+  <h3>WHAT IS AUDIT? — THE CHAIN</h3>
+  <div class="rev-grid">
+    <div class="rev-card"><div class="rc-title" style="color:var(--red);">Definition</div><div class="rc-body">Official examination of financial statements to ENHANCE CONFIDENCE of users</div></div>
+    <div class="rev-card"><div class="rc-title" style="color:var(--cyan);">How assurance is given</div><div class="rc-body">Auditor obtains <strong>Audit Evidence</strong> → evaluates assertions → issues report</div></div>
+    <div class="rev-card"><div class="rc-title" style="color:var(--orange);">Type of assurance</div><div class="rc-body">REASONABLE (not absolute). Cannot guarantee 100% accuracy — inherent limitations exist</div></div>
+    <div class="rev-card"><div class="rc-title" style="color:var(--green);">Assertions</div><div class="rc-body">Claims made by MANAGEMENT through the FS. E.g. "Inventory exists" — auditor verifies</div></div>
+  </div>
+  <div style="margin-top:10px;font-size:.85rem;padding:10px;background:rgba(0,229,255,.04);border-radius:5px;border:1px solid rgba(0,229,255,.1);">
+    <strong style="color:var(--cyan);">Engagement Agreement: </strong>Management = (1) Prepare FS + (2) Provide data. Auditor = Conduct audit per ISAs.
+  </div>
+</div>
+
+<div class="rev-section">
+  <h3>COMPANY STRUCTURE & INDEPENDENCE</h3>
+  <div style="font-size:.85rem;color:#aac5d8;line-height:1.8;margin-bottom:12px;">
+    <strong style="color:var(--gold);">Hierarchy:</strong> Shareholders → appoint BOD → BOD forms management (Sales/Marketing/Finance/Production/HR) + appoints Independent Auditor<br>
+    <strong style="color:var(--gold);">TCWG</strong> = Those Charged with Governance = BOD members<br>
+    <strong style="color:var(--gold);">Auditor audits ALL 5:</strong> Balance Sheet + P&L + Cash Flow + Changes in Equity + Notes to FS
+  </div>
+  <div class="rev-grid">
+    <div class="rev-card"><div class="rc-title" style="color:var(--red);">Independence Rule 1</div><div class="rc-body">Partner does NOT have shares in the client</div></div>
+    <div class="rev-card"><div class="rc-title" style="color:var(--red);">Independence Rule 2</div><div class="rc-body">Partner does NOT have relatives working in the client</div></div>
+  </div>
+</div>
+
+<div class="rev-section">
+  <h3>THE GOLDEN DRAFTING RULE</h3>
+  <div style="background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:6px;padding:14px;margin-bottom:14px;">
+    <div style="font-family:'Orbitron',sans-serif;font-size:.65rem;color:var(--gold);margin-bottom:8px;">TEMPLATE</div>
+    <div style="font-size:.95rem;color:#fff;">"Since entity is involved in <span style="color:var(--cyan);">[situation]</span>, there is a risk of <span style="color:var(--red);">[overstatement/understatement]</span> of <span style="color:var(--gold);">[FS line item]</span>."</div>
+  </div>
+  <div style="font-size:.83rem;color:#9ab;">Pick situation from question → Link to specific FS line item → State if OVER or UNDER stated → That's a complete risk answer!</div>
+</div>
+
+<div class="rev-section">
+  <h3>13 MASTER RISK SCENARIOS</h3>
+  <table class="risk-table-mini">
+    <tr><th>RISK FACTOR</th><th>AUDIT RISK</th></tr>
+    <tr><td class="rf">Courier + Fuel hike</td><td class="ri">Understatement of fuel expenses</td></tr>
+    <tr><td class="rf">Loans + Flood</td><td class="ri">Overstatement of loans + Understatement of bad debt</td></tr>
+    <tr><td class="rf">Exports/Imports</td><td class="ri">Incorrect exchange rate (forex risk)</td></tr>
+    <tr><td class="rf">Export banned + stock</td><td class="ri">Overstatement of revenue + Overstatement of PPE</td></tr>
+    <tr><td class="rf">Selling at lower margin</td><td class="ri">Overstatement of inventory + Understatement of NRV</td></tr>
+    <tr><td class="rf">Competitor + Revenue UP</td><td class="ri">Overstatement of revenue + Overstatement of PPE</td></tr>
+    <tr><td class="rf">Debtor days ↑</td><td class="ri">Overstatement of receivables + Understatement of bad debt</td></tr>
+    <tr><td class="rf">Inventory days ↑</td><td class="ri">Overstatement of inventory + Understatement of NRV</td></tr>
+    <tr><td class="rf">Product banned/declining</td><td class="ri">Overstatement of inventory + Understatement of NRV</td></tr>
+    <tr><td class="rf">Highly regulated industry</td><td class="ri">Non-compliance + Undisclosed penalties</td></tr>
+    <tr><td class="rf">Sales decline + negative CFO</td><td class="ri">PPE Impairment risk</td></tr>
+    <tr><td class="rf">R&D (IAS 38)</td><td class="ri">Research capitalized / Dev without 4 conditions</td></tr>
+    <tr><td class="rf">Going concern signals</td><td class="ri">Customer lost / Covenant breach / CL > CA / Negative CFO</td></tr>
+  </table>
+</div>
+
+<div class="rev-section">
+  <h3>IAS 38 — RESEARCH vs DEVELOPMENT</h3>
+  <div class="rev-grid">
+    <div class="rev-card" style="border-color:rgba(255,61,90,.2);"><div class="rc-title" style="color:var(--red);">RESEARCH — Always EXPENSE</div><div class="rc-body">Future economic benefits NOT probable. Examples: market research, evaluating alternatives. Cannot capitalize.</div></div>
+    <div class="rev-card" style="border-color:rgba(0,230,118,.2);"><div class="rc-title" style="color:var(--green);">DEVELOPMENT — Capitalize IF 4 conditions met</div><div class="rc-body">1. Technical FEASIBILITY · 2. INTENTION to complete · 3. Ability to USE or SELL · 4. RESOURCES available</div></div>
+  </div>
+</div>
+
+<div class="rev-section">
+  <h3>GOING CONCERN — 4 KEY INDICATORS</h3>
+  <div class="rev-grid">
+    <div class="rev-card"><div class="rc-title" style="color:var(--red);">1. Major Customer GONE</div><div class="rc-body">Loss of primary revenue source → significant doubt on viability</div></div>
+    <div class="rev-card"><div class="rc-title" style="color:var(--red);">2. Debt Covenants BREACHED</div><div class="rc-body">Debt IMMEDIATELY becomes payable (current) → current ratio deteriorates sharply</div></div>
+    <div class="rev-card"><div class="rc-title" style="color:var(--red);">3. CL Exceeds CA</div><div class="rc-body">Negative working capital → cannot meet short-term obligations</div></div>
+    <div class="rev-card"><div class="rc-title" style="color:var(--red);">4. Negative Cash Flows</div><div class="rc-body">Consistently negative CFO → company consuming cash → sustainability risk</div></div>
+  </div>
+  <div style="margin-top:10px;font-size:.83rem;color:var(--gold);padding:8px 12px;background:rgba(255,215,0,.04);border-radius:5px;border:1px solid rgba(255,215,0,.15);">
+    Going concern = Company able to operate for NEXT 12 MONTHS from end of reporting period
+  </div>
+</div>
+
+<div class="rev-section">
+  <h3>ISA 315 — RISK ASSESSMENT PROCEDURES (IIOA)</h3>
+  <div class="rev-grid">
+    <div class="rev-card"><div class="rc-title">1. INQUIRY</div><div class="rc-body">Ask: CFO, CEO, Those Charged with Governance (TCWG/BOD)</div></div>
+    <div class="rev-card"><div class="rc-title">2. INSPECTION</div><div class="rc-body">Read: Board minutes, Internal audit reports, Legal notices</div></div>
+    <div class="rev-card"><div class="rc-title">3. OBSERVATION</div><div class="rc-body">Watch: News, Environmental changes, Warehouse conditions</div></div>
+    <div class="rev-card"><div class="rc-title">4. ANALYTICAL PROCEDURES</div><div class="rc-body">Calculate: Ratio analysis, % changes, year-on-year comparisons, expected vs actual</div></div>
+  </div>
+</div>
+
+<div class="rev-section">
+  <h3>ANALYTICAL PROCEDURE EXAMPLES</h3>
+  <div style="font-size:.85rem;color:#aac5d8;line-height:2;">
+    📊 Debtor days = (Trade Receivables ÷ Revenue) × 365<br>
+    📊 Inventory days = (Inventory ÷ COGS) × 365<br>
+    📊 Commission % = (Commission ÷ Sales) × 100 — should be consistent year-on-year<br>
+    📊 Expected revenue = Prior year × (1 + price increase %) — compare to actual<br>
+    📊 Sites increasing but dismantling provision decreasing = Understatement of provision<br>
+    📊 Salary expense decreasing but employees increasing = Understatement of wages<br>
+    📊 Branches increasing but rent decreasing = Understatement of rent
+  </div>
+</div>
+
+  </div>
+</div>
+
+<script>
+const LEVELS=[
+{id:1,title:"WHAT IS AUDIT?",subtitle:"Foundations & Purpose",icon:"🔍",
+cheatsheet:{sections:[
+{heading:"DEFINITION OF AUDIT",items:[
+{tag:"Audit",body:"Official examination of financial statements to enhance the CONFIDENCE OF USERS."},
+{tag:"Purpose",body:"NOT to prepare FS, NOT to detect ALL fraud — but to ENHANCE USER CONFIDENCE."},
+{tag:"Output",body:"Auditor gives ASSURANCE that FS are FREE FROM MATERIAL MISSTATEMENT."}]},
+{heading:"HOW AUDITOR GIVES ASSURANCE",items:[
+{tag:"Step 1",body:"Auditor OBTAINS EVIDENCE (audit evidence) about assertions in FS."},
+{tag:"Step 2",body:"Evidence allows auditor to evaluate whether FS are free from material misstatement."},
+{tag:"Step 3",body:"Auditor issues AUDIT REPORT — giving REASONABLE (not absolute) assurance."}]},
+{heading:"KEY RESPONSIBILITIES",items:[
+{tag:"Management",body:"Responsible for PREPARATION of financial statements."},
+{tag:"Management",body:"Responsible for PROVISION OF DATA to the auditor."},
+{tag:"Auditor",body:"Responsible to conduct audit in accordance with ISAs (International Standards on Auditing)."}]},
+{heading:"ASSERTIONS",items:[
+{tag:"Definition",body:"Claims made by MANAGEMENT through the financial statements. E.g. 'Inventory exists', 'Receivables are collectible'."},
+{tag:"Auditor",body:"Verifies management's assertions by obtaining appropriate audit evidence."}]}],
+trick:"AUDIT = Assurance Underpins Decision-making through Independent Testing. Management = Chef (prepares food). Auditor = Food Inspector (checks it's safe).",
+examFave:"Who is responsible for preparing FS? MANAGEMENT — not the auditor! And assurance is REASONABLE, never ABSOLUTE. Classic ICAP trap!"},
+questions:[
+{type:"mcq",text:"What is the PRIMARY purpose of conducting an audit of financial statements?",
+options:["To detect all fraud and errors in a company","To enhance the confidence of users of financial statements","To prepare and verify the accuracy of financial statements","To manage the financial affairs of the company on behalf of shareholders"],
+correct:1,trap:false,
+explanation:"Audit is conducted to ENHANCE THE CONFIDENCE OF USERS. It is not a guarantee against all fraud, and auditors do not prepare the FS — management does. This is the foundational ISA 200 concept.",
+memory:"Audit = Confidence booster for users like banks, investors, creditors."},
+
+{type:"truefalse",text:"Management is responsible for preparing the financial statements, while the auditor is only responsible for examining them.",
+correct:true,trap:false,
+explanation:"TRUE. This is a fundamental distinction in the engagement agreement: Management PREPARES FS and PROVIDES DATA. The auditor conducts the audit per ISAs. A classic exam statement.",
+memory:"Management = prepares + provides. Auditor = examines + reports."},
+
+{type:"mcq",text:"How does an auditor provide assurance that financial statements are free from material misstatement?",
+options:["By preparing the financial statements alongside management","By reviewing only the balance sheet and approving it","By obtaining audit evidence and issuing an audit report","By certifying that all transactions are 100% accurate"],
+correct:2,trap:false,
+explanation:"Auditor obtains AUDIT EVIDENCE → evaluates management's assertions → issues report giving REASONABLE assurance that FS are free from material misstatement. Evidence is the foundation.",
+memory:"Evidence → Assurance → Report. The three-step audit chain."},
+
+{type:"scenario",scenario:"A bank is considering a PKR 500 million loan to a manufacturing company. The company's balance sheet shows: Inventory Rs 200M, Trade Receivables Rs 500M, Investment Property Rs 1.2B, PPE Rs 2.3B. The bank manager asks: 'How do I know if these figures are reliable?'",
+text:"What role does the AUDITOR play in addressing the bank manager's concern?",
+options:["The auditor prepares the balance sheet figures on behalf of management","The auditor gives assurance that the FS are free from material misstatement, enhancing the bank's confidence","The auditor approves the bank's lending decision based on the figures","The auditor investigates whether the company's management is engaged in fraud"],
+correct:1,trap:false,
+explanation:"Classic audit scenario! The bank (user) needs confidence in the FS. The auditor enhances that confidence by giving assurance that the FS are free from material misstatement — by checking existence, valuation, rights of each asset.",
+memory:"Bank = User needing confidence. Auditor = Provider of that confidence through assurance."},
+
+{type:"truefalse",text:"The auditor provides ABSOLUTE assurance that financial statements are completely free from all errors and fraud.",
+correct:false,trap:true,
+explanation:"FALSE — KEY ICAP EXAM TRAP! Auditors provide REASONABLE assurance, not absolute. Absolute assurance is impossible due to inherent limitations: sampling, estimation, management override of controls.",
+wrongNote:"The word 'absolute' is the trap. Reasonable = achievable. Absolute = impossible.",
+memory:"Reasonable = realistic. Absolute = impossible. Audit = REASONABLE assurance only."},
+
+{type:"mcq",text:"An auditor checks the EXISTENCE of inventory worth Rs 200 million shown on the balance sheet. This is an example of verifying which concept?",
+options:["Management's responsibility for preparing FS","Assertions made by management in the financial statements","ISA 315 analytical procedures","Auditor independence requirements"],
+correct:1,trap:false,
+explanation:"Assertions = claims management makes through the FS. Showing inventory of Rs 200M is management ASSERTING it exists. The auditor verifies existence (and other assertions like valuation, rights, completeness).",
+memory:"Assertion = Management's claim. Audit = Verify the claim with evidence."}]},
+
+{id:2,title:"STRUCTURE & INDEPENDENCE",subtitle:"Company Hierarchy & Auditor Ethics",icon:"🏛️",
+cheatsheet:{sections:[
+{heading:"COMPANY STRUCTURE",items:[
+{tag:"Shareholders",body:"Appoint the BOD to operate the company on their behalf."},
+{tag:"BOD",body:"Forms management structure and distributes into departments: Sales, Marketing, Finance (CFO), Production, HR."},
+{tag:"TCWG",body:"Those Charged with Governance = BOD members responsible for oversight."},
+{tag:"Ind. Auditor",body:"Appointed by BOD. Audits ALL 5: Balance Sheet · P&L · Cash Flow · Changes in Equity · Notes to FS. Approved by BOD."}]},
+{heading:"AUDITOR INDEPENDENCE",items:[
+{tag:"Rule 1",body:"Partner does NOT have shares in the client company (no financial interest)."},
+{tag:"Rule 2",body:"Partner does NOT have relatives working in the client (no personal relationships)."},
+{tag:"Why?",body:"Independence ensures opinion is UNBIASED and OBJECTIVE — the whole point of external audit."}]},
+{heading:"ENGAGEMENT AGREEMENT",items:[
+{tag:"Mgmt Duty 1",body:"Management responsible for PREPARATION of financial statements."},
+{tag:"Mgmt Duty 2",body:"Management responsible for PROVISION OF DATA to auditor."},
+{tag:"Auditor Duty",body:"Auditor responsible to conduct audit in accordance with ISAs."}]}],
+trick:"Remember: TCWG = BOD = Governance level. Management = Operations level. Auditor = OUTSIDE both — that's independence!",
+examFave:"Which 5 statements does the auditor audit? ALL: Balance Sheet + P&L + Cash Flow + Changes in Equity + Notes to FS. Notes are often forgotten!"},
+questions:[
+{type:"mcq",text:"In the company hierarchy, who appoints the Board of Directors (BOD)?",
+options:["The management team and CFO jointly","The Independent Auditor as part of governance","The Shareholders","The Chief Financial Officer"],
+correct:2,trap:false,
+explanation:"Shareholders appoint the BOD to OPERATE the company on their behalf. The BOD then forms management structure and distributes operations into departments. Classic hierarchy question.",
+memory:"Shareholders → BOD → Management → Departments. Shareholders are at the TOP."},
+
+{type:"mcq",text:"An audit partner owns 200 shares in the company they are auditing. Which fundamental ethical requirement is violated?",
+options:["Confidentiality — partner has access to inside financial information","Independence — partner has a financial interest in the client company","Professional Competence — partner may lack audit skills","Due Care — partner may not perform the audit with sufficient care"],
+correct:1,trap:false,
+explanation:"Independence requires: Partner does NOT have shares in the client. Owning shares creates a financial self-interest — if the company does well, the partner benefits — compromising objectivity.",
+memory:"No shares. No relatives. No independence threat. Auditor = outside observer only."},
+
+{type:"truefalse",text:"An auditor can remain fully independent even if their close relative works as the Finance Manager of the client company.",
+correct:false,trap:false,
+explanation:"FALSE. Ethical requirements explicitly state: Partner does NOT have relatives in the client. A close relative in a key financial role creates familiarity/self-interest threats to independence.",
+memory:"Family in client = Independence compromised. Chapter examples are explicit!"},
+
+{type:"mcq",text:"According to the engagement agreement, who is responsible for PROVISION OF DATA to the auditor? (EXAM TRAP ⚠️)",
+options:["The Independent Auditor collects all data independently","Those Charged with Governance (TCWG/BOD)","Management","The Board of Directors directly"],
+correct:2,trap:true,
+explanation:"Engagement agreement: MANAGEMENT is responsible for (1) Preparation of FS AND (2) Provision of data. Auditor = conducts audit per ISAs. TCWG/BOD = oversight/governance role, NOT data provision.",
+wrongNote:"Trap: Students confuse TCWG with Management. TCWG = BOD (oversight only). Management = day-to-day operations and data provision.",
+memory:"Management = 2 duties: Prepare FS + Provide data. TCWG = Oversight only."},
+
+{type:"mcq",text:"The Independent Auditor audits which financial statements? (EXAM TRAP ⚠️)",
+options:["Only the Balance Sheet and Profit & Loss Statement","Balance Sheet, Profit & Loss, and Cash Flow Statement only","Balance Sheet, P&L, Cash Flow, Changes in Equity, AND Notes to Financial Statements","Any statements the CFO requests to be audited"],
+correct:2,trap:true,
+explanation:"Auditor audits ALL FIVE: Balance Sheet, Profit & Loss, Cash Flow Statement, Changes in Equity, AND Notes to FS. Notes are explicitly listed and often forgotten in answers!",
+wrongNote:"Most students pick A or B — forgetting Cash Flow, Changes in Equity, or Notes. The chapter lists all 5 explicitly.",
+memory:"5 statements: BS + P&L + CF + CE + Notes. ALL 5, every time."},
+
+{type:"scenario",scenario:"Audit Firm XYZ has been auditing TechCorp for 15 years. The senior audit partner plays golf regularly with TechCorp's CEO and their families socialize together. The partner always issues clean opinions without raising significant concerns.",
+text:"What is the MOST SIGNIFICANT independence threat in this situation?",
+options:["Self-interest threat — partner indirectly owns TechCorp shares through a fund","Advocacy threat — partner promotes TechCorp to investors","Familiarity threat — long association creates excessive closeness with client management","Self-review threat — partner is reviewing their own prior year work"],
+correct:2,trap:false,
+explanation:"Familiarity threat: 15-year relationship + personal friendship = auditor may become too close to the client and lose professional skepticism. This is why audit partner rotation is required.",
+memory:"Long audit relationship + personal friendship = Familiarity threat = Independence risk."},
+
+{type:"truefalse",text:"The Independent Auditor is part of the same management structure as the Finance Department of the company.",
+correct:false,trap:false,
+explanation:"FALSE. The Independent Auditor is OUTSIDE the company's management structure. In the org chart, the auditor is shown separately — appointed by BOD but independent of all departments. That's the whole point!",
+memory:"Independent = Outside management hierarchy. Not part of Finance Dept or any department."}]},
+
+{id:3,title:"RISK DRAFTING TECHNIQUE",subtitle:"The Art of Identifying Audit Risks",icon:"⚠️",
+cheatsheet:{sections:[
+{heading:"THE GOLDEN RULE",items:[
+{tag:"Rule",body:"Pick the SITUATION or RISK FACTOR from the question and LINK IT with a specific FINANCIAL STATEMENTS LINE ITEM."},
+{tag:"Template",body:'"Since entity is involved in [situation], there is a risk of [overstatement/understatement] of [FS line item]."'},
+{tag:"Key words",body:"Use: OVERSTATEMENT (balance too HIGH than it should be) or UNDERSTATEMENT (balance too LOW)."}]},
+{heading:"QUICK RISK REFERENCE",items:[
+{tag:"Courier + Fuel hike",body:"→ UNDERSTATEMENT of fuel expenses"},
+{tag:"Loans + Flood",body:"→ OVERSTATEMENT of loans + UNDERSTATEMENT of bad debt"},
+{tag:"Exports/Imports",body:"→ Incorrect exchange rate (forex risk)"},
+{tag:"Export banned + stock",body:"→ OVERSTATEMENT of revenue + OVERSTATEMENT of PPE"},
+{tag:"Lower margin / Competitor",body:"→ OVERSTATEMENT of inventory + UNDERSTATEMENT of NRV losses"},
+{tag:"Competitor + Revenue UP",body:"→ OVERSTATEMENT of revenue + OVERSTATEMENT of PPE"},
+{tag:"Debtor days ↑",body:"→ OVERSTATEMENT of receivables + UNDERSTATEMENT of bad debt"},
+{tag:"Inventory days ↑",body:"→ OVERSTATEMENT of inventory + UNDERSTATEMENT of NRV losses"},
+{tag:"Highly regulated",body:"→ UNDERSTATEMENT of penalties + Undisclosed contingencies"}]},
+],
+trick:"Always ask: 'Which FS line item could be WRONG because of this situation?' Then state if it's OVER or UNDER stated.",
+examFave:"The drafting template is tested EVERY ICAP exam. Know it cold: Situation → Link → Risk of overstatement/understatement of [item]."},
+questions:[
+{type:"mcq",text:"What is the GOLDEN RULE for drafting audit risk answers in ICAP exams?",
+options:["Calculate all financial ratios first, then identify risks","Pick the situation/risk factor from the question and link it with a specific financial statement line item","Identify fraud risks only and ignore errors","Start with the auditor's responsibilities, then list the risks"],
+correct:1,trap:false,
+explanation:"Golden Rule = Situation from question → Link to FS line item → Draft using template. 'Since entity [situation], there is a risk of [overstatement/understatement] of [FS item].'",
+memory:"Pick → Link → Draft. Three steps to a perfect risk answer."},
+
+{type:"mcq",text:"A courier company faces a significant HIKE IN FUEL PRICES during the year. What is the CORRECT audit risk?",
+options:["Risk of overstatement of revenue from courier services","Risk of overstatement of trade receivables from customers","Risk of understatement of fuel expenses","Risk of impairment of delivery vehicles"],
+correct:2,trap:false,
+explanation:"Fuel price hike = fuel costs should be HIGHER. If costs appear lower than expected, they may be UNDERSTATED. Classic Case 3 from the chapter: hike in prices → understatement of that expense.",
+memory:"Higher fuel prices → Expenses should be higher → Risk of UNDERSTATEMENT of fuel expenses."},
+
+{type:"scenario",scenario:"A microfinance bank provides small loans to individuals in interior Sindh (rural areas). During the year, severe flooding occurred across interior Sindh, affecting the livelihoods of thousands of borrowers who can no longer repay their loans.",
+text:"Using the drafting technique, which answer CORRECTLY identifies the audit risk?",
+options:["Since entity provides courier services, there is risk of understatement of fuel expenses","Since entity provides loans in rural areas and there is flooding, there is a risk of overstatement of loans receivable and understatement of bad debt expense","Since there is flooding, there is a risk of overstatement of property, plant and equipment","Since entity is a bank, there is a risk of understatement of interest income"],
+correct:1,trap:false,
+explanation:"Flood = borrowers cannot repay → loans may be uncollectable → loans OVERSTATED (should be written down to recoverable amount), bad debt expense UNDERSTATED. This is Case 6 from the chapter.",
+memory:"Flood = people can't repay = Loans Overstated + Bad Debt Understated."},
+
+{type:"mcq",text:"A company operates in a HIGHLY REGULATED pharmaceutical industry where heavy fines apply for any non-compliance. What are the CORRECT audit risks? (EXAM TRAP ⚠️)",
+options:["Risk of overstatement of revenue due to regulatory pricing controls","Risk of understatement of penalties and risk of undisclosed contingent liabilities","Risk of overstatement of inventory due to expired medicines only","Risk of impairment of PPE due to regulatory upgrading requirements"],
+correct:1,trap:true,
+explanation:"Highly regulated industry → risk of non-compliance → (1) Risk of UNDERSTATEMENT of fines/penalties payable and (2) Risk of UNDISCLOSED CONTINGENCIES. From the summary table and DPL Spring 2020 case.",
+wrongNote:"Students often pick inventory or PPE risks. The primary risk in regulated industries is the COMPLIANCE + PENALTIES + CONTINGENCY risk.",
+memory:"Regulated = Fines. Fines may be UNDERSTATED or not disclosed. Always mention contingencies too."},
+
+{type:"mcq",text:"A company has a NEW COMPETITOR in the market. Despite this, the company's revenue has INCREASED significantly. What does this suggest? (EXAM TRAP ⚠️)",
+options:["No risk — the company successfully outperformed the competitor","Risk of understatement of cost of sales due to efficiency gains","Risk of overstatement of revenue (possible fictitious sales or premature recognition)","Risk of understatement of PPE due to reduced production needs"],
+correct:2,trap:true,
+explanation:"When a competitor arrives, revenue should logically face pressure. If it STILL INCREASES significantly, the auditor must be skeptical — risk = OVERSTATEMENT of revenue. This is a key analytical red flag.",
+wrongNote:"Trap: Students may say 'no risk' if the company grew. But the auditor applies professional skepticism — unexpected increases always warrant scrutiny.",
+memory:"Competitor + Revenue UP = Suspicious = Risk of overstatement of revenue."},
+
+{type:"truefalse",text:"When inventory days INCREASE from one year to the next, this indicates that inventory is selling FASTER — reducing the risk of overstatement.",
+correct:false,trap:true,
+explanation:"FALSE — exact opposite! Inventory days INCREASING means inventory takes LONGER to sell. This = slow-moving/obsolete inventory → NRV may be lower than cost → Risk of OVERSTATEMENT of inventory and UNDERSTATEMENT of NRV losses.",
+wrongNote:"Classic direction trap: Increasing days = inventory moving SLOWER. Decreasing days = selling faster.",
+memory:"More days = Slow inventory = Possibly obsolete = Overstatement risk."},
+
+{type:"mcq",text:"An entity's EXPORT SALES have been BANNED by the government. The entity still has significant unsold stock. What are the TWO correct audit risks?",
+options:["Risk of understatement of revenue and risk of impairment of inventory only","Risk of overstatement of revenue (already recognized) and risk of overstatement of PPE (impairment from ban)","Risk of understatement of cash and risk of overstatement of expenses","Risk of going concern only — the company cannot export"],
+correct:1,trap:false,
+explanation:"Export ban: (1) Revenue may already be recognized for goods that can no longer be exported = OVERSTATEMENT of revenue. (2) PPE (machines used for production) may lose value if production reduces permanently = OVERSTATEMENT of PPE. From the summary table.",
+memory:"Export banned = Can't sell = Revenue overstated + Production machines may be impaired (PPE overstated)."},
+
+{type:"scenario",scenario:"A retail company's gross profit margin decreased from 40% (prior year) to 20% (current year). A new competitor arrived, forcing the company to sell products at significantly reduced prices, sometimes below cost.",
+text:"Which audit risk BEST describes the impact on INVENTORY?",
+options:["Risk of understatement of inventory because selling price fell below cost","Risk of overstatement of inventory and understatement of NRV losses (IAS 2: lower of cost or NRV)","Risk of overstatement of revenue despite the margin decline","Risk of going concern due to 20% margin being unsustainable"],
+correct:1,trap:false,
+explanation:"Selling below cost → NRV (net realizable value) < cost → Inventory must be written down to NRV per IAS 2. If not done → OVERSTATEMENT of inventory AND UNDERSTATEMENT of NRV losses. From Case 5.",
+memory:"Selling price < Cost = NRV Loss needed = Inventory Overstated + NRV Loss Understated."}]},
+
+{id:4,title:"CASE STUDIES I",subtitle:"Ahad Ltd, Debtor/Inventory Days & Ratios",icon:"📊",
+cheatsheet:{sections:[
+{heading:"KEY FORMULAS",items:[
+{tag:"Debtor Days",body:"(Trade Receivables ÷ Revenue) × 365 — measures how long customers take to pay. Days ↑ = collection slowing = overstatement risk."},
+{tag:"Inventory Days",body:"(Inventory ÷ COGS) × 365 — measures how long inventory stays before being sold. Days ↑ = slow-moving = NRV risk."},
+{tag:"Gross Margin",body:"(Gross Profit ÷ Revenue) × 100 — declining margin = selling at lower prices (competitor pressure)."}]},
+{heading:"AHAD LIMITED CASE",items:[
+{tag:"Context",body:"Toy manufacturer. Price increased 15%. Competitor arrived. Special toys bulk-purchased."},
+{tag:"Debtor Risk",body:"Days: 35 → 55. Risk: OVERSTATEMENT of receivables + UNDERSTATEMENT of bad debt expense."},
+{tag:"Inventory Risk",body:"Days: 25 → 35. Risk: OVERSTATEMENT of inventory + UNDERSTATEMENT of NRV losses."},
+{tag:"Revenue Analysis",body:"Expected = 4,000,000 × 1.15 = 4,600,000. Actual = 5,400,000. Extra Rs 800,000 unexplained → OVERSTATEMENT of revenue."}]},
+{heading:"OTHER CASE TIPS",items:[
+{tag:"Pharma Case",body:"Revenue 540bn vs 450bn. Medicine import → NRV risk. Monthly invoices verified at Rs 45bn each."},
+{tag:"Courier (Case 3)",body:"Cost of services decreased 15.67% while fuel prices HIKED. Inconsistency = understatement of fuel expenses."},
+{tag:"Margins Case",body:"Margin 40% → 20%. Competitor. Two risks: Inventory NRV + Revenue overstatement."}]}],
+trick:"For ratio risks: Days UP = OVERSTATEMENT risk. Margin DOWN = NRV risk. Revenue UP unexpectedly despite bad news = OVERSTATEMENT risk.",
+examFave:"Ahad Ltd type: Given prior year revenue and price %, calculate expected revenue. Compare to actual. Difference = overstatement risk to quantify!"},
+questions:[
+{type:"mcq",text:"What is the CORRECT formula for calculating 'Debtor Days'? (EXAM TRAP ⚠️)",
+options:["(Revenue ÷ Trade Receivables) × 365","(Trade Receivables ÷ Revenue) × 365","(Trade Receivables ÷ COGS) × 365","(COGS ÷ Inventory) × 365"],
+correct:1,trap:true,
+explanation:"Debtor Days = (Trade Receivables ÷ Revenue) × 365. Receivables on TOP, Revenue at BOTTOM. Inventory Days = (Inventory ÷ COGS) × 365.",
+wrongNote:"Students often flip the formula to Revenue ÷ Receivables. Remember: the item being measured (receivables) goes on top.",
+memory:"Debtor Days: AR on TOP, Revenue at BOTTOM, × 365."},
+
+{type:"mcq",text:"Ahad Limited's prior year revenue was Rs 4,000,000. During the current year, prices were INCREASED by 15%. What would be the EXPECTED revenue based on price increase alone?",
+options:["Rs 4,150,000","Rs 4,400,000","Rs 4,600,000","Rs 5,400,000"],
+correct:2,trap:false,
+explanation:"Expected revenue = 4,000,000 × 1.15 = Rs 4,600,000. Actual revenue = Rs 5,400,000. Extra Rs 800,000 cannot be explained by the 15% price increase alone → Risk of overstatement of revenue.",
+memory:"Prior year × 1.15 = Expected. Actual > Expected = Suspicious = Overstatement risk."},
+
+{type:"scenario",scenario:"Ahad Limited (toy manufacturer):\n• Debtor days: 2023 = 55 days | 2022 = 35 days\n• AR: 821,919 (2023) | 383,562 (2022)\n• Revenue: 5,400,000 (2023) | 4,000,000 (2022)",
+text:"Debtor days increased from 35 to 55 days. What is the CORRECT audit risk statement?",
+options:["Since debtor days decreased from 55 to 35, there is a risk of understatement of receivables","Since receivable days have been increased from 35 to 55 days, there is a risk of overstatement of receivables and understatement of bad debt expense","Since debtor days increased, collection efficiency improved — no risk","Since receivables increased in absolute value, there is a risk of understatement of revenue"],
+correct:1,trap:false,
+explanation:"Debtor days UP from 35 to 55 = customers taking LONGER to pay = possible uncollectable receivables. Risk: Receivables OVERSTATED (include doubtful amounts not written off) and bad debt expense UNDERSTATED.",
+memory:"Debtor days UP = Collection slowing = Receivables Overstated + Bad Debt Understated."},
+
+{type:"mcq",text:"Ahad Limited's inventory days increased from 25 to 35 days. The company purchased bulk 'Special Toys' despite existing stock. What is the audit risk?",
+options:["Risk of understatement of purchases and overstatement of COGS","Risk of overstatement of inventory and understatement of NRV losses","Risk of overstatement of revenue from new special toys","Risk of understated debtor days causing collection issues"],
+correct:1,trap:false,
+explanation:"Inventory days UP from 25 to 35 = inventory sitting longer = possibly slow-moving/obsolete. Bulk purchase despite existing stock = excess inventory. Risk: Inventory OVERSTATED (NRV writedown needed) and NRV losses UNDERSTATED.",
+memory:"More stock + slower movement = Old/excess inventory = NRV writedown needed = Overstatement risk."},
+
+{type:"scenario",scenario:"Case 1 — Pharmaceutical Company:\nRevenue 2025 = Rs 540 billion | Revenue 2024 = Rs 450 billion\nMonthly invoices verified at Rs 45 billion each (12 months × 45bn = 540bn).\nAuditor discovers: medicine imports banned by government for 3 months during the year.",
+text:"Given the import BAN, which audit risk is MOST relevant to INVENTORY?",
+options:["Risk of understatement of pharmaceutical revenue due to the ban","Risk of overstatement of inventory and understatement of NRV losses (imported medicines may not be sellable)","Risk of overstatement of cash balances due to advance payments","Risk of understatement of accounts payable to overseas suppliers"],
+correct:1,trap:false,
+explanation:"Import ban = imported medicines may have limited salability/usability. Existing imported stock may need to be written down → NRV may be less than cost → OVERSTATEMENT of inventory and UNDERSTATEMENT of NRV losses.",
+memory:"Import ban = Can't sell medicine stock = NRV drops = Inventory Overstated."},
+
+{type:"mcq",text:"Courier company's cost of services DECREASED from Rs 2,568,000 to Rs 2,165,459 (15.67% decrease) while fuel prices INCREASED. What is the analytical red flag?",
+options:["Cost decreased due to improved efficiency — no audit risk","Cost of services should have INCREASED given higher fuel prices — the decrease suggests understatement of fuel expenses","Decrease in costs proves management reduced wastage — commendable","No risk — perhaps the company switched to cheaper fuel alternatives"],
+correct:1,trap:true,
+explanation:"Fuel prices UP = Costs should be UP. But costs are DOWN 15.67%. This is INCONSISTENT. Analytical red flag = fuel expenses likely UNDERSTATED. This is Case 3 — the defining case for understatement of expenses.",
+wrongNote:"Trap: 'Efficiency improvement' is a plausible management explanation, but the auditor must QUESTION the inconsistency before accepting it.",
+memory:"Fuel prices UP but costs DOWN = Something wrong = Understatement of fuel expenses."},
+
+{type:"scenario",scenario:"Case 5 — Manufacturing Entity:\n2022: Sales 12,000,000 | COGS 9,600,000 | Margin 20%\n2021: Sales 5,000,000 | COGS 3,000,000 | Margin 40%\nA competitor arrived. Entity now sells at significantly reduced prices, sometimes below cost.",
+text:"What is the COMPLETE set of audit risks from this scenario?",
+options:["Only risk of overstatement of revenue due to sales volume doubling","Risk of overstatement of inventory and understatement of NRV losses (selling below cost) AND risk of overstatement of revenue (doubled despite competition)","Only risk of understatement of COGS due to lower buying prices","Risk of going concern — 20% margin is insufficient"],
+correct:1,trap:false,
+explanation:"Two risks: (1) Margin fell 40%→20% → selling possibly below cost → OVERSTATEMENT of inventory, UNDERSTATEMENT of NRV losses. (2) Sales doubled despite competition → suspicious increase → OVERSTATEMENT of revenue risk.",
+memory:"Case 5 = Two risks together: Inventory NRV + Revenue overstatement. Both in one scenario!"},
+
+{type:"mcq",text:"An export-oriented entity earns revenue of Rs 3,372,000, calculated as: $1,000/month × 12 months × PKR 281 exchange rate. What is the AUDIT RISK from this foreign currency transaction?",
+options:["Risk of overstatement of cash collections from export customers","Risk of using incorrect exchange rate for recording sales and foreign exchange gain or loss","Risk of overstatement of accounts receivable from foreign customers","Risk of understatement of COGS due to imported raw materials"],
+correct:1,trap:false,
+explanation:"Case 6: Entity exports goods priced in USD and records in PKR. The risk = INCORRECT EXCHANGE RATE used for conversion. This affects both revenue (if wrong rate) and any forex gains/losses arising from rate movements.",
+memory:"$→PKR conversion = Exchange rate risk. Wrong rate = Wrong revenue + Wrong forex gain/loss."}]},
+
+{id:5,title:"ADVANCED CASE STUDIES",subtitle:"R&D, Going Concern & Complex Risks",icon:"🔬",
+cheatsheet:{sections:[
+{heading:"RESEARCH vs DEVELOPMENT — IAS 38",items:[
+{tag:"RESEARCH",body:"ALWAYS EXPENSE immediately. In this phase, future economic benefits are NOT probable. Examples: market studies, evaluating alternatives."},
+{tag:"DEVELOPMENT",body:"Capitalize as Intangible Asset ONLY when ALL 4 conditions are met."},
+{tag:"Condition 1",body:"Technical FEASIBILITY of the project."},
+{tag:"Condition 2",body:"INTENTION to complete the project."},
+{tag:"Condition 3",body:"Ability to USE or SELL the resulting asset."},
+{tag:"Condition 4",body:"RESOURCES are available to complete development."},
+{tag:"Audit Risk",body:"Research wrongly CAPITALIZED (overstatement of intangibles). Development capitalized without meeting all conditions."}]},
+{heading:"GOING CONCERN",items:[
+{tag:"Definition",body:"Company is able to operate for the NEXT 12 MONTHS from the end of the reporting period."},
+{tag:"Indicator 1",body:"Single/major customer GONE (significant revenue lost)."},
+{tag:"Indicator 2",body:"Debt covenants BREACHED — debt IMMEDIATELY becomes payable (current)."},
+{tag:"Indicator 3",body:"Current liabilities EXCEED current assets (negative working capital)."},
+{tag:"Indicator 4",body:"NEGATIVE cash flows from operations (consistently)."}]},
+{heading:"OTHER ADVANCED RISKS",items:[
+{tag:"Cash in hand (long)",body:"→ Risk of MISAPPROPRIATION of cash"},
+{tag:"Expired stock",body:"→ Risk of NRV losses + illness to customers + fines from regulators"},
+{tag:"Rapid PPE upgrades",body:"→ Risk of REDUCTION IN USEFUL LIFE + IMPAIRMENT of existing PPE"}]}],
+trick:"IAS 38: Research = ALWAYS expense. Development = Capitalize ONLY if ALL 4 conditions met. If any condition fails → expense it!",
+examFave:"Going concern tested every session. Know all 4 indicators cold. Key: debt covenant breach = debt IMMEDIATELY becomes current (payable now)."},
+questions:[
+{type:"mcq",text:"A pharmaceutical company is in the RESEARCH phase of developing a new medicine. Under IAS 38, how should research costs be treated?",
+options:["Capitalize as intangible asset since future benefits seem likely based on management estimates","Expense immediately — future economic benefits are NOT probable in research phase","Capitalize only if technical feasibility is established by management","Defer as prepaid expense and recognize when the medicine is approved by regulators"],
+correct:1,trap:false,
+explanation:"IAS 38 is absolute: In the RESEARCH phase, future economic benefits are NOT probable → ALWAYS expense immediately. Cannot capitalize research costs regardless of management's optimism.",
+memory:"Research = Expense ALWAYS. No exceptions. No conditions."},
+
+{type:"scenario",scenario:"Case 7 — Pharmaceutical company recording Rs 1.5 billion as Intangible Asset (medicine formula).\nThe formula is still being developed. Management has not formally assessed whether all capitalization conditions under IAS 38 have been met.",
+text:"What is the CORRECT audit risk statement for this situation?",
+options:["Risk of understatement of research expense because insufficient costs were incurred","Risk that research expense has been capitalized as intangible asset; OR development costs capitalized when conditions for development are NOT fulfilled","Risk of overstatement of revenue from the anticipated new medicine sales","Risk of understatement of amortization on the intangible asset"],
+correct:1,trap:false,
+explanation:"Case 7 drafting: 'Since entity is involved in R&D, there is a risk that research expense might have been CAPITALIZED, or development expenditure capitalized when CONDITIONS for development are NOT FULFILLED.' → Overstatement of intangible assets.",
+memory:"R&D risk = Two parts: Research wrongly capitalized OR Development capitalized without 4 conditions."},
+
+{type:"mcq",text:"What does 'Going Concern' mean in the context of financial reporting?",
+options:["A company will never go bankrupt in the foreseeable future","A company is able to operate for the next 12 months from the end of the reporting period","A company's total assets exceed its total liabilities at all times","A company maintains a positive gross profit margin every financial year"],
+correct:1,trap:false,
+explanation:"Going concern = Company CAN OPERATE for the NEXT 12 MONTHS from year-end. Not forever — just the next 12 months. The auditor must assess any significant doubts about this.",
+memory:"Going concern = 12 months ahead. Not forever — just next 12 months!"},
+
+{type:"mcq",text:"Which of the following is NOT a going concern doubt indicator? (EXAM TRAP ⚠️)",
+options:["Single major customer lost during the year","Debt covenants breached by the company","Revenue INCREASED by 30% during the year","Current liabilities exceed current assets at year-end"],
+correct:2,trap:true,
+explanation:"Revenue INCREASING is a POSITIVE indicator — suggests the business is performing well. All others are going concern DOUBT indicators: customer loss, covenant breach, negative working capital.",
+wrongNote:"Exam trap: 'Current liabilities exceed current assets' IS a going concern indicator (negative option C/D). Revenue increase is the POSITIVE one = NOT a doubt indicator.",
+memory:"Going concern doubts = BAD things. Revenue UP = GOOD thing = NOT a doubt indicator."},
+
+{type:"truefalse",text:"When debt covenants are breached, the entire loan IMMEDIATELY becomes payable (reclassified to current liabilities).",
+correct:true,trap:false,
+explanation:"TRUE. Covenant breach triggers acceleration clauses. Debt immediately becomes CURRENT. This dramatically increases current liabilities → current ratio worsens → working capital becomes negative → going concern risk.",
+memory:"Covenant breach → Debt becomes current → CL spikes → Going concern risk!"},
+
+{type:"scenario",scenario:"Ninja Foods Limited (NFL) — food chain with multiple restaurants.\nInternal audit report found: 2 restaurants NOT following the expired stock policy (expired food not being separated and destroyed as required).\nNFL operates in a food service industry — heavily regulated for health and safety.",
+text:"What is the MOST COMPLETE set of audit risks?",
+options:["Risk of overstatement of revenue from these 2 restaurants","Risk that inventory (expired stock) not written off; risk that government fines may be imposed and provision not recorded; risk that expired stock may cause illness to customers creating contingent liabilities","Risk of impairment of restaurant equipment at the 2 non-compliant outlets","Going concern risk due to potential regulatory shutdown"],
+correct:1,trap:false,
+explanation:"NFL expired stock = 3 risks: (1) Expired inventory not written off = OVERSTATEMENT of inventory. (2) Government may impose fines = UNDERSTATEMENT of penalties (provision not recorded). (3) Using expired food = health risk → contingent liability. From Autumn 2022 case.",
+memory:"Expired stock = 3 risks: Inventory overstated + Fines understated + Contingent liability for illness."},
+
+{type:"mcq",text:"A company keeps significant CASH IN HAND for extended periods (not depositing promptly in the bank). What is the primary audit risk?",
+options:["Risk of overstatement of bank balances due to reconciliation errors","Risk of misappropriation of cash by employees or management","Risk of understatement of interest income due to delayed deposits","Risk of overstatement of accounts payable due to cash timing"],
+correct:1,trap:false,
+explanation:"Cash in hand for long periods = opportunity for theft/misappropriation. This is Other Risk Factor #1 from the chapter. Cash is the most liquid asset — highest misappropriation risk when kept on premises.",
+memory:"Cash in hand for long = Theft opportunity = Misappropriation risk."},
+
+{type:"mcq",text:"A telecom company (currently 4G) faces rapid technological upgrade to 5G. It has PPE worth Rs 102 billion. What are the TWO audit risks from rapid technological change?",
+options:["Risk of overstatement of revenue and understatement of expenses","Risk of using inappropriate (longer) useful life for depreciation AND risk of PPE impairment (obsolescence)","Risk of understated intangible assets and overstated cash","Going concern risk as the company cannot afford 5G upgrade"],
+correct:1,trap:false,
+explanation:"Rapid tech change (4G→5G) = Current 4G equipment becomes obsolete sooner → (1) Useful life used for depreciation may be TOO LONG (depreciation understated, PPE overstated), AND (2) PPE may need IMPAIRMENT testing under IAS 36. Case 2 from the chapter.",
+memory:"Tech upgrade = Old equipment obsolete sooner = Wrong useful life + Impairment risk."}]},
+
+{id:6,title:"ISA 315 & ANALYTICAL PROCEDURES",subtitle:"Risk Assessment & Planning",icon:"🎯",
+cheatsheet:{sections:[
+{heading:"ISA 315 OBJECTIVE",items:[
+{tag:"Objective",body:"To IDENTIFY and ASSESS risks of material misstatement (due to fraud or error) at the FINANCIAL STATEMENT and ASSERTION levels."},
+{tag:"Through",body:"Understanding the entity and its environment INCLUDING internal controls — providing basis for designing responses to assessed risks."},
+{tag:"N1",body:"Understanding covers: (1) Entity and its Environment (N2) + (2) Entity's Internal Controls (N3)."},
+{tag:"N2",body:"Entity and environment includes: Relevant industry, regulatory + other external factors (economic conditions, interest rates, inflation, currency)."}]},
+{heading:"4 RISK ASSESSMENT PROCEDURES — IIOA",items:[
+{tag:"1. INQUIRY",body:"Ask: CFO, CEO, Those Charged with Governance (TCWG/BOD)"},
+{tag:"2. INSPECTION",body:"Read: Board minutes, Internal audit reports, Legal notices"},
+{tag:"3. OBSERVATION",body:"Watch: News, Environmental changes, Warehouse conditions"},
+{tag:"4. ANALYTICAL",body:"Calculate: Ratios, % changes, year-on-year, expected vs actual comparisons"}]},
+{heading:"3 USES OF ANALYTICAL PROCEDURES",items:[
+{tag:"Planning Stage",body:"By PARTNER/MANAGER as risk assessment — identify high-risk areas BEFORE audit."},
+{tag:"Substantive",body:"By ENGAGEMENT TEAM to obtain sufficient appropriate audit evidence."},
+{tag:"Near End",body:"Overall conclusion — do FS match the auditor's understanding of the entity?"}]}],
+trick:"IIOA: I-nquiry, I-nspection, O-bservation, A-nalytical. All FOUR are ISA 315 risk assessment procedures. Substantive testing is NOT one of them!",
+examFave:"Analytical procedures can be used at ALL THREE stages. Also: 'Commission % dropped from 5% to 3%' = ask what the expected amount should be!"},
+questions:[
+{type:"mcq",text:"What is the PRIMARY objective of ISA 315?",
+options:["To detect all fraud in the entity's financial statements before audit begins","To identify and assess risks of material misstatement due to fraud or error at FS and assertion levels, through understanding the entity and its environment","To verify that management has prepared the financial statements correctly","To provide a standard audit checklist applicable to all entities regardless of size"],
+correct:1,trap:false,
+explanation:"ISA 315 = Identify and ASSESS risks of material misstatement (fraud or error) at FS and assertion levels, BY understanding entity + environment + internal controls → basis for designing audit responses.",
+memory:"ISA 315 = Risk ID + Assessment = Through understanding entity/environment/controls."},
+
+{type:"mcq",text:"Under ISA 315, which correctly lists ALL the risk assessment procedures? (EXAM TRAP ⚠️)",
+options:["Inquiry and Substantive Testing only","Inquiry, Inspection, and Observation only","Inquiry, Inspection, Observation, AND Analytical Procedures","Confirmation, Inspection, and Analytical Procedures only"],
+correct:2,trap:true,
+explanation:"ISA 315 risk assessment = IIOA: (1) Inquiry, (2) Inspection, (3) Observation, (4) Analytical Procedures. All FOUR. Substantive testing is NOT a risk assessment procedure — it's a subsequent audit procedure.",
+wrongNote:"Trap: Students forget Analytical Procedures is one of the 4 methods. And Substantive Testing is NOT in this list!",
+memory:"IIOA: Inquiry + Inspection + Observation + Analytical. Four methods, not three!"},
+
+{type:"mcq",text:"As part of INQUIRY (risk assessment procedure under ISA 315), who would the auditor typically inquire from?",
+options:["Only junior employees to get unfiltered, unmanaged information","External customers and suppliers to understand the competitive market","CFO, CEO, and Those Charged with Governance (TCWG/BOD)","Independent industry experts and consultants only"],
+correct:2,trap:false,
+explanation:"Inquiry under ISA 315 focuses on: CFO (financial perspective), CEO (strategic perspective), TCWG/BOD (governance level). These provide understanding of entity operations, risks, and controls.",
+memory:"Inquire from: CFO + CEO + TCWG (BOD). Top management and governance level."},
+
+{type:"mcq",text:"Which of the following documents would the auditor INSPECT as part of risk assessment procedures?",
+options:["Weather reports, social media posts, and satellite images","Board minutes, internal audit reports, and legal notices","Customer satisfaction surveys and marketing materials","Environmental impact assessments from government agencies"],
+correct:1,trap:false,
+explanation:"INSPECTION = reading key documents: Board minutes (decisions/risks discussed at BOD level), Internal Audit reports (control issues), Legal notices (pending litigation). These provide documented insight into the entity.",
+memory:"Inspect: Board Minutes + Internal Audit Reports + Legal Notices. Three key documents."},
+
+{type:"scenario",scenario:"Commission expense analysis:\n• 2025: Sales 4,450,000 | Commission 133,500 | Commission % = 3.0%\n• 2024: Sales 2,500,000 | Commission 125,000 | Commission % = 5.0%\nThe commission % of sales declined from 5% to 3%.",
+text:"What does this analytical procedure reveal?",
+options:["Commission expense is correctly recorded — lower % is acceptable as management may have renegotiated terms","There is a risk that commission expense has been UNDERSTATED (if 5% is the normal rate, expected = 4,450,000 × 5% = 222,500 vs actual 133,500)","There is a risk of overstatement of commission income earned","Sales are overstated because commission should have grown proportionally with sales"],
+correct:1,trap:false,
+explanation:"If commission was consistently 5% of sales, expected = 4,450,000 × 5% = Rs 222,500. Actual = Rs 133,500. Difference = ~Rs 89,000 potentially UNDERSTATED. Commission expense risk! This is analytical procedure type E from the chapter.",
+memory:"Commission % should be consistent. Drop without explanation = Understatement of commission expense."},
+
+{type:"truefalse",text:"Analytical procedures can ONLY be used as SUBSTANTIVE PROCEDURES during the audit — they cannot be used at the planning stage.",
+correct:false,trap:true,
+explanation:"FALSE — Analytical procedures used at THREE stages: (1) PLANNING (risk assessment by partner/manager), (2) SUBSTANTIVE (audit evidence by engagement team), (3) NEAR END (overall conclusion whether FS match understanding). Very versatile!",
+wrongNote:"Trap: Students think analytical procedures = substantive only. They are KEY risk assessment tools at planning stage too!",
+memory:"Analytical = Planning + Substantive + Final Review. Three stages, not one!"},
+
+{type:"mcq",text:"A telecom company's number of network SITES is INCREASING, but the PROVISION FOR DISMANTLING (decommissioning) is DECREASING. What does this analytical procedure suggest?",
+options:["The company is becoming more efficient in site decommissioning management","There is a risk that provision for decommissioning is UNDERSTATED (should increase with more sites, per IAS 37)","The company is disposing of sites and correctly recognizing gains on disposal","Revenue should be increasing proportionally with more network sites"],
+correct:1,trap:false,
+explanation:"More sites = more future dismantling obligations → provision should INCREASE. If provision is DECREASING while sites increase = inconsistency → provision for decommissioning UNDERSTATED. From Shapatar Telecom mock case.",
+memory:"Sites UP + Dismantling provision DOWN = Inconsistent = Provision understated (IAS 37 violation)."},
+
+{type:"scenario",scenario:"An auditor is planning the audit of a large manufacturing company. The auditor:\n(1) Reviews recent news articles about the industry's new environmental regulations,\n(2) Visits the company's warehouse and observes disorganized stock storage,\n(3) Reads the internal audit report which flagged cash handling weaknesses at multiple locations.",
+text:"Which ISA 315 risk assessment procedures are being demonstrated?",
+options:["Inquiry and Substantive Testing","Observation (news + warehouse visit) and Inspection (internal audit report)","Only Analytical Procedures","Confirmation and Inspection only"],
+correct:1,trap:false,
+explanation:"(1) Reading news = OBSERVATION. (2) Visiting warehouse = OBSERVATION. (3) Reading internal audit report = INSPECTION. This scenario combines two of the four ISA 315 IIOA procedures.",
+memory:"News + Warehouse = Observation. Reading documents/reports = Inspection."}]},
+
+{id:7,title:"FINAL BOSS ⚡",subtitle:"ICAP Past Papers — Full Exam Simulation",icon:"🏆",
+cheatsheet:{sections:[
+{heading:"LAST-MINUTE RISK REMINDERS",items:[
+{tag:"Trap #1",body:"Competitor arrived + Revenue UP = Overstatement of revenue (not a positive sign for auditor)."},
+{tag:"Trap #2",body:"Covenant breach = Debt IMMEDIATELY becomes current payable."},
+{tag:"Trap #3",body:"PECA/regulations → Risk of non-compliance = UNDERSTATEMENT of penalties."},
+{tag:"Trap #4",body:"Research = Always expense. Development = Only if 4 conditions ALL met."},
+{tag:"Trap #5",body:"Days UP = OVER statement risk (receivables AND inventory)."},
+{tag:"Trap #6",body:"Revenue UP despite bad news = OVERSTATEMENT risk (skepticism!)"},
+{tag:"Trap #7",body:"PPE with declining revenues = IMPAIRMENT risk (IAS 36)."}]},
+{heading:"COMPLETE 13-RISK TABLE",items:[
+{tag:"Courier + Fuel hike",body:"→ Understatement of fuel expenses"},
+{tag:"Loans + Flood",body:"→ Overstatement of loans + Bad debt understated"},
+{tag:"Highly regulated",body:"→ Non-compliance penalties understated"},
+{tag:"Debtor/Inventory days ↑",body:"→ Overstatement of respective balances"},
+{tag:"Sales decline + neg CFO",body:"→ PPE Impairment risk"}]}],
+trick:"In exam: Read ALL details → Identify EACH risk factor → Draft each one using the template → Link to FS line item → State OVER or UNDER stated.",
+examFave:"EVERY ICAP past paper has 8-12 marks on audit risk identification. This table is your weapon!"},
+questions:[
+{type:"rapidfire",text:"(DPL Spring 2020) Dragon Pakistan sells Drug A at LOW MARGINS due to a competitor's improved product. What is the INVENTORY audit risk?",
+options:["Risk of understatement of pharmaceutical revenue","Risk of overstatement of inventory — Drug A may need to be recorded at lower of cost or NRV","Risk of overstatement of PPE used in Drug A production","Risk of understatement of trade payables to Swiss suppliers"],
+correct:1,timeLimit:10,trap:false,
+explanation:"Low margins = selling close to or below cost. Drug A inventory may have NRV < cost. IAS 2: lower of cost or NRV → Risk of OVERSTATEMENT of inventory if not written down to NRV.",
+memory:"Low selling price = NRV < Cost? = Inventory Overstated."},
+
+{type:"scenario",scenario:"Kenwood Appliances Ltd (31 Dec 2025):\n• Defective kettles — some shipped to customers causing damage\n• Warranty provision = PKR 6,000,000 (management says no further claims expected)\n• ABC Traders declared bankruptcy — PKR 5,600,000 receivable still in trade receivables\n• Revenue increased 20% despite the product recall\n• Defective kettles remaining in closing inventory at full cost",
+text:"Which answer gives the MOST COMPLETE set of audit risks?",
+options:["Only risk of understated warranty provision","Risk of understated warranty provision; overstated inventory (kettles at cost not NRV); contingent liabilities from customer injuries; overstated receivables (ABC Traders bankrupt); overstated revenue (20% up despite recall)","Risk of going concern due to product defects and litigation only","Risk of overstatement of PPE and understatement of depreciation"],
+correct:1,trap:false,
+explanation:"Kenwood = 5 risks: (1) Warranty provision understated (more claims may come), (2) Defective kettle inventory overstated (NRV issue), (3) Contingent liabilities from customer injuries, (4) ABC Traders bankrupt → receivable overstated, (5) Revenue 20% up despite recall → overstatement risk.",
+memory:"Kenwood = 5-risk case: Warranty + NRV + Contingency + Bad debt + Revenue overstatement."},
+
+{type:"rapidfire",text:"(APL Spring 2022) Adventure Travel Limited records COMMISSION revenue when PAYMENT IS RECEIVED. Commission is earned when bookings are made through APL. What is the revenue recognition risk?",
+options:["Risk of understatement of commission revenue because cash-basis is conservative","Risk that APL may recognize commission revenue even when the criteria for recording are NOT met (wrong timing of recognition)","Risk of overstatement of cash collections from commission","Risk of understatement of unearned revenue only"],
+correct:1,timeLimit:10,trap:false,
+explanation:"Commission should be recognized when PERFORMANCE OBLIGATION IS MET (booking made and APL earns entitlement). Recording only when cash received = wrong basis → possible premature or missed recognition. Revenue recognition timing risk.",
+memory:"Revenue = when earned (booking made), not when cash received. Cash basis = wrong timing."},
+
+{type:"scenario",scenario:"(Shapatar Telecom Mock)\nRevenue: 2025 = Rs 45,800,000k | 2024 = Rs 50,000,000k\nRegulatory Fees: 2025 = Rs 1,100,000k (2.4%) | 2024 = Rs 1,500,000k (3%)\nLicensing arrangement: Regulatory fees = fixed % of revenue.",
+text:"What is the audit risk regarding REGULATORY FEES?",
+options:["Risk of overstatement of regulatory fees — recorded higher than the fixed %","Risk of understatement of regulatory fees — should be 3% per licensing arrangement but only 2.4% was recorded (expected Rs 1.374B vs actual Rs 1.1B)","Risk of overstatement of revenue due to declining subscriber base","Risk of impairment of the intangible license cost only"],
+correct:1,trap:false,
+explanation:"Regulatory fees are fixed at 3% per licensing arrangement. 2025 recorded = 2.4% (Rs 1.1B). Expected at 3% = 45,800,000 × 3% = Rs 1,374,000k. Actual = Rs 1,100,000k. UNDERSTATED by ~Rs 274,000k.",
+memory:"Fixed % contract + Lower % recorded = Understatement. Calculate expected and compare!"},
+
+{type:"scenario",scenario:"(NFL Autumn 2022) Ninja Foods Limited:\n• Interest rates on long-term loans INCREASED significantly during the year\n• Profits declined by 30% (rising electricity, interest, raw material costs)\n• 70% customers pay cash; 55% of visits on weekends → cash deposited next working day\n• Two restaurants not following expired stock policy (internal audit finding)",
+text:"Which combination of audit risks is MOST APPROPRIATE for these factors?",
+options:["Risk of going concern only — 30% profit decline is severe","Risk of breach of debt covenants (interest rates up + profit down); interest accrual not properly recorded; management fraud risk (pressure); cash misappropriation (weekend cash held overnight); expired stock risks","Risk of understatement of revenue only","Risk of overstatement of PPE due to restaurant equipment"],
+correct:1,trap:false,
+explanation:"NFL = Multiple risks: (1) Higher interest rates + lower profits = covenant breach risk. (2) Interest accrual may be incorrect. (3) Management under pressure → fraud risk. (4) Cash held overnight on weekends = misappropriation risk. (5) Expired stock = inventory + fines + contingency risks.",
+memory:"NFL = Multi-risk: Covenants + Interest + Fraud pressure + Cash + Expired stock. 5 areas!"},
+
+{type:"mcq",text:"(Spring 2017 — Sukkur Limited) Cash flows from operations: 2014: (585M), 2015: (1,948M), 2016: (3,361M). Financial charges: 2014: 350M, 2015: 600M, 2016: 750M. Revenue is INCREASING. What is the going concern situation?",
+options:["No going concern risk — increasing revenue indicates the business is thriving","Going concern risk: Negative and WORSENING cash flows from operations (+3 years) combined with increasing financial charges — company cannot sustain operations","Only the cost of sales increase creates going concern risk","The profit decline from 1,601M to 1,550M alone triggers going concern"],
+correct:1,trap:true,
+explanation:"Negative CFO three years in a row AND WORSENING (-585, -1,948, -3,361M) + rising financing charges (350, 600, 750M) = severe going concern indicators. Revenue increasing doesn't offset cash flow crisis!",
+wrongNote:"Trap: Students see 'revenue increasing' and say 'no going concern risk'. But CASH IS WHAT PAYS BILLS. Negative CFO = serious concern regardless of revenue.",
+memory:"Revenue UP but CFO negative AND worsening = Cash crisis = Going concern. Cash wins over revenue!"},
+
+{type:"rapidfire",text:"(Shapatar Telecom) Telecom towers will eventually be dismantled at end of useful life/license period. The provision for decommissioning appears understated. Which standard applies and what is the risk?",
+options:["IAS 38 — Risk of overstatement of intangible license cost","IAS 37 — Risk of understatement of provision for decommissioning/dismantling of towers","IFRS 15 — Risk of incorrect revenue recognition from tower operations","IAS 36 — Risk of impairment of towers before end of useful life"],
+correct:1,timeLimit:10,trap:false,
+explanation:"IAS 37: Provisions for decommissioning must be recognized when obligation arises (when towers are constructed). If provision is understated as sites increase = UNDERSTATEMENT of provision liability. Classic telecom audit risk.",
+memory:"Towers = Future dismantling obligation = IAS 37 provision = Must be recognized fully."},
+{type:"scenario",scenario:"(Saif Limited) The company launched a 'Fighter Toy' which gained popularity but caused harm to children. Management initiated a product recall. The company also imported expensive machinery to manufacture stuffed toys — but the stuffed toy market is ALREADY SATURATED with competitors.",
+text:"What is the PRIMARY audit risk for the NEWLY IMPORTED MACHINERY for stuffed toys?",
+options:["Risk of understatement of manufacturing overhead costs allocated to stuffed toys","Risk of PPE impairment — machinery's recoverable amount may be lower than carrying amount (saturated market = limited future revenues from stuffed toys)","Risk of overstatement of revenue from stuffed toy samples sent to suppliers","Risk of understatement of warranty provision specifically for stuffed toys"],
+correct:1,trap:false,
+explanation:"Machinery imported for a SATURATED market = future economic benefits from this PPE may be severely limited (no market share to capture). IAS 36: impairment indicators exist → recoverable amount (value in use) < carrying amount → PPE IMPAIRMENT risk.",
+memory:"Saturated market + new machinery = Low future revenues = PPE impairment risk. Market saturation = impairment indicator!"},
+
+{type:"mcq",text:"(APL Spring 2022 — complete picture) APL invested heavily in equipment (bank loan) after accident. Competitors offer cheaper services. APL introduced 'Book now and Pay later' instalment scheme. What is the COMPLETE set of audit risks?",
+options:["Risk of going concern only","Risk of PPE impairment (competition reduces revenues); risk of breach of loan covenants (financial pressure); risk of overstated receivables (instalment customers may default); risk of understated contingent liabilities (accident litigation)","Risk of understatement of revenue from commission only","Risk of overstatement of cash and understatement of loans"],
+correct:1,trap:false,
+explanation:"APL = 4 risks: (1) Competition lowers revenues → PPE impairment (IAS 36). (2) Bank loan + declining revenues → covenant breach risk. (3) 'Book now Pay later' → instalment customers may not pay → receivables overstated. (4) Paragliding accident → contingent liabilities from legal claims.",
+memory:"APL = 4 risks: PPE impairment + Covenant breach + Receivables overstated + Contingent liability."}]}
+];// end LEVELS
+
+let gs={levelIdx:0,qIdx:0,score:0,lives:3,streak:0,levelCorrect:0,levelTotal:0,timerInterval:null,timerLeft:10,answered:false};
+
+function getRank(score,total){
+  const p=total>0?(score/total)*100:0;
+  if(p>=90)return"🏆 AUDIT PARTNER";
+  if(p>=75)return"🥇 Audit Manager";
+  if(p>=55)return"📊 Audit Senior";
+  if(p>=35)return"📋 Semi-Senior";
+  return"📝 Audit Trainee";
+}
+function getLivesDisplay(){return"❤️".repeat(gs.lives)+"🖤".repeat(3-gs.lives);}
+function updateHUD(){
+  const lvl=LEVELS[gs.levelIdx];
+  document.getElementById("hudLevel").textContent=`LEVEL ${lvl.id} — ${lvl.title}`;
+  document.getElementById("hudScore").textContent=`⚡ ${gs.score} PTS`;
+  document.getElementById("hudLives").textContent=getLivesDisplay();
+  document.getElementById("hudStreak").textContent=`🔥 STREAK: ${gs.streak}`;
+  const pct=lvl.questions.length>0?(gs.qIdx/lvl.questions.length)*100:0;
+  document.getElementById("progressFill").style.width=pct+"%";
+}
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  const inGame=["playing","feedback","level_complete"].includes(id);
+  document.getElementById("hud").classList.toggle("visible",inGame);
+  document.getElementById("progressWrap").classList.toggle("visible",id==="playing");
+  window.scrollTo(0,0);
+}
+function showStory(){showScreen("story");}
+function showRevision(){showScreen("revision");}
+function startGame(){
+  gs={levelIdx:0,qIdx:0,score:0,lives:3,streak:0,levelCorrect:0,levelTotal:0,timerInterval:null,timerLeft:10,answered:false};
+  showCheatSheet();
+}
+function restartGame(){startGame();}
+function showCheatSheet(){
+  const lvl=LEVELS[gs.levelIdx];
+  gs.levelCorrect=0;gs.levelTotal=0;
+  document.getElementById("csBadge").textContent=`LEVEL ${lvl.id} BRIEFING`;
+  document.getElementById("csTitle").textContent=`${lvl.icon} ${lvl.title}`;
+  const cs=lvl.cheatsheet;
+  let html="";
+  cs.sections.forEach(sec=>{
+    html+=`<div class="cs-section"><h4>${sec.heading}</h4>`;
+    sec.items.forEach(item=>{html+=`<div class="cs-item"><span class="tag">${item.tag}</span><span>${item.body}</span></div>`;});
+    html+=`</div>`;
+  });
+  if(cs.trick)html+=`<div class="memory-trick">${cs.trick}</div>`;
+  if(cs.examFave)html+=`<div class="exam-fave">${cs.examFave}</div>`;
+  document.getElementById("csBody").innerHTML=html;
+  updateHUD();showScreen("cheatsheet");
+}
+function startLevelPlay(){gs.qIdx=0;gs.answered=false;showScreen("playing");updateHUD();showQuestion();}
+function showQuestion(){
+  clearTimer();gs.answered=false;
+  const lvl=LEVELS[gs.levelIdx];const q=lvl.questions[gs.qIdx];gs.levelTotal++;updateHUD();
+  const typeBadge=document.getElementById("qTypeBadge");
+  const typeMap={mcq:["MCQ","qt-mcq"],truefalse:["TRUE / FALSE","qt-tf"],scenario:["SCENARIO","qt-scenario"],rapidfire:["⚡ RAPID FIRE","qt-rapidfire"]};
+  const[label,cls]=typeMap[q.type]||["MCQ","qt-mcq"];
+  typeBadge.textContent=q.trap?"⚠️ EXAM TRAP":label;
+  typeBadge.className="q-type-badge "+(q.trap?"qt-trap":cls);
+  document.getElementById("qNum").textContent=`Q${gs.qIdx+1} of ${lvl.questions.length}`;
+  document.getElementById("trapWarning").style.display=q.trap?"flex":"none";
+  const sb=document.getElementById("scenarioBox");
+  if(q.scenario){sb.textContent=q.scenario;sb.style.display="block";}else{sb.style.display="none";}
+  document.getElementById("qText").textContent=q.text;
+  document.getElementById("qText").classList.add("fade-in");
+  setTimeout(()=>document.getElementById("qText").classList.remove("fade-in"),400);
+  const area=document.getElementById("qAnswerArea");area.innerHTML="";
+  if(q.type==="truefalse")renderTF(q,area);else renderMCQ(q,area);
+  const tr=document.getElementById("timerRing");
+  if(q.type==="rapidfire"){tr.style.display="block";startTimer(q.timeLimit||10,()=>handleAnswer(-1,q));}
+  else{tr.style.display="none";}
+}
+function renderMCQ(q,area){
+  const div=document.createElement("div");div.className="options";
+  const letters=["A","B","C","D"];
+  q.options.forEach((opt,i)=>{
+    const btn=document.createElement("div");btn.className="option pop-in";
+    btn.style.animationDelay=(i*.06)+"s";
+    btn.innerHTML=`<span class="opt-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.onclick=()=>{if(!gs.answered)handleAnswer(i,q);};
+    div.appendChild(btn);
+  });area.appendChild(div);
+}
+function renderTF(q,area){
+  const div=document.createElement("div");div.className="tf-options";
+  ["TRUE","FALSE"].forEach((label,i)=>{
+    const btn=document.createElement("button");
+    btn.className="tf-btn "+(i===0?"tf-true":"tf-false");btn.textContent=label;
+    btn.onclick=()=>{if(!gs.answered)handleAnswer(i===0,q,btn,div);};
+    div.appendChild(btn);
+  });area.appendChild(div);
+}
+function handleAnswer(answer,q,tfBtn,tfDiv){
+  if(gs.answered)return;gs.answered=true;clearTimer();
+  document.getElementById("timerRing").style.display="none";
+  let isCorrect=false;
+  if(q.type==="truefalse"){
+    isCorrect=(answer===q.correct);
+    if(tfDiv){
+      tfDiv.querySelectorAll(".tf-btn").forEach(b=>b.disabled=true);
+      if(isCorrect)tfBtn.classList.add("correct");
+      else{tfBtn.classList.add("wrong");const rb=answer?tfDiv.querySelector(".tf-false"):tfDiv.querySelector(".tf-true");if(rb)rb.classList.add("correct");}
+    }
+  }else{
+    isCorrect=(answer===q.correct);
+    document.querySelectorAll(".option").forEach((o,i)=>{
+      if(i===q.correct)o.classList.add("correct");
+      else if(i===answer&&!isCorrect)o.classList.add("wrong");
+      else o.classList.add("disabled");
+    });
+  }
+  if(isCorrect){gs.score+=(q.type==="rapidfire")?15:10;gs.streak++;gs.levelCorrect++;if(gs.streak>0&&gs.streak%3===0)gs.score+=5;}
+  else{gs.streak=0;gs.lives--;updateHUD();if(gs.lives<=0){setTimeout(gameOver,1200);return;}}
+  setTimeout(()=>showFeedback(isCorrect,q),800);
+}
+function showFeedback(isCorrect,q){
+  const card=document.getElementById("feedbackCard");
+  card.className="feedback-card fade-in "+(isCorrect?"correct-card":"wrong-card");
+  document.getElementById("fbIcon").textContent=isCorrect?"✅":"❌";
+  const title=document.getElementById("fbTitle");
+  title.textContent=isCorrect?"CORRECT!":"INCORRECT";title.className="fb-title "+(isCorrect?"c":"w");
+  const pts=isCorrect?(q.type==="rapidfire"?"+15":"+10"):"-1 LIFE";
+  document.getElementById("fbPoints").textContent=isCorrect?`${pts} PTS earned`:`${pts} | Lives: ${getLivesDisplay()}`;
+  const sb=document.getElementById("streakBonus");sb.style.display=(isCorrect&&gs.streak>0&&gs.streak%3===0)?"flex":"none";
+  const ca=document.getElementById("fbCorrectAns");
+  if(q.type==="truefalse")ca.innerHTML=`Correct Answer: <span>${q.correct?"TRUE":"FALSE"}</span>`;
+  else ca.innerHTML=`Correct Answer: <span>${q.options[q.correct]}</span>`;
+  document.getElementById("fbExplanation").textContent=q.explanation||"";
+  const wn=document.getElementById("fbWrongNote");
+  if(q.wrongNote&&!isCorrect){wn.textContent=q.wrongNote;wn.style.display="block";}else wn.style.display="none";
+  const mem=document.getElementById("fbMemory");
+  if(q.memory){mem.textContent=q.memory;mem.style.display="block";}else mem.style.display="none";
+  showScreen("feedback");document.getElementById("hud").classList.add("visible");
+}
+function nextQuestion(){
+  gs.qIdx++;const lvl=LEVELS[gs.levelIdx];
+  if(gs.qIdx>=lvl.questions.length)showLevelComplete();
+  else{showScreen("playing");updateHUD();showQuestion();}
+}
+function showLevelComplete(){
+  const lvl=LEVELS[gs.levelIdx];
+  const icons=["🥉","🥈","🥇","🏅","🎖️","🌟","🏆"];
+  document.getElementById("lcIcon").textContent=icons[gs.levelIdx]||"🏅";
+  document.getElementById("lcTitle").textContent=`LEVEL ${lvl.id} CLEARED!`;
+  document.getElementById("lcSub").textContent=`${lvl.icon} ${lvl.title} — Audit Complete`;
+  document.getElementById("lcScore").textContent=gs.score;
+  document.getElementById("lcCorrect").textContent=`${gs.levelCorrect}/${gs.levelTotal}`;
+  document.getElementById("lcLives").textContent=getLivesDisplay();
+  document.getElementById("lcRank").textContent=getRank(gs.score,gs.levelTotal*10);
+  const isLast=gs.levelIdx>=LEVELS.length-1;
+  const btn=document.getElementById("lcNextBtn");
+  btn.textContent=isLast?"🏆 VIEW RESULTS":"NEXT LEVEL →";
+  btn.onclick=isLast?showFinalResults:nextLevel;
+  showScreen("level_complete");document.getElementById("hud").classList.add("visible");
+}
+function nextLevel(){
+  gs.levelIdx++;if(gs.levelIdx>=LEVELS.length){showFinalResults();return;}
+  gs.levelCorrect=0;gs.levelTotal=0;showCheatSheet();
+}
+function showFinalResults(){
+  document.getElementById("finalScore").textContent=`${gs.score} PTS`;
+  document.getElementById("finalRank").textContent=getRank(gs.score,LEVELS.reduce((a,l)=>a+l.questions.length,0)*10);
+  showScreen("final_results");document.getElementById("hud").classList.remove("visible");
+}
+function gameOver(){
+  clearTimer();document.getElementById("goScore").textContent=`Score: ${gs.score} pts`;
+  showScreen("gameover");document.getElementById("hud").classList.remove("visible");
+}
+function startTimer(seconds,onExpire){
+  gs.timerLeft=seconds;
+  const circle=document.getElementById("timerCircle");const val=document.getElementById("timerVal");
+  const circ=2*Math.PI*18;circle.style.strokeDashoffset=0;val.textContent=seconds;
+  gs.timerInterval=setInterval(()=>{
+    gs.timerLeft--;val.textContent=gs.timerLeft;
+    circle.style.strokeDashoffset=circ*(1-gs.timerLeft/seconds);
+    if(gs.timerLeft<=0){clearTimer();if(!gs.answered)onExpire();}
+  },1000);
+}
+function clearTimer(){if(gs.timerInterval){clearInterval(gs.timerInterval);gs.timerInterval=null;}}
+</script>
+
+</body>
+</html>
